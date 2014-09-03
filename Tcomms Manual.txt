@@ -1,0 +1,630 @@
+Welcome to the manual for the Tcomms script that is so big, it actually needs a manual!
+
+View http://pastebin.com/raw.php?i=LyFDdwAb for the source code. Check regularly for updates!
+
+Author Note: Please do not abuse the -malf,-nuke, or other 'WE ARE ALL GOING TO DIE!' functions. Use them ONLY IF you are actually malf, and going to explode the station or know that Nuke Ops have set you up the bomb.
+I would like these announcements to be taken seriously by the crew!
+
+~~~~~TABLE OF CONTENTS~~~~~
+SECTION 0: INTRO AND CHANGELOG
+SECTION 1: ABRIDGED GUIDE
+SECTION 2: AUTO FUNCTIONS
+SECTION 3: RADIO FREQUENCY COMMANDS
+SECTION 4: COMMON COMMANDS
+SECTION 5: SILICON/SUPERUSER COMMANDS
+SECTION 6: AI ANNOUNCEMENTS
+
+
+~~~~~ CHANGELOG ~~~~~
+1.66.5
+Silicons (AI, Borgs) are now denoted with the | | brackets when speaking.
+
+1.66.4
+Better handling of Unknown people and mismatching IDs. 
+The mismatch is no longer broadcast to the crew, but the AI will be notified.
+
+1.66.3
+Minor logic fix.
+
+1.66.2
+Cyborg code should work now.
+1.66.1
+*Converted more commands with a toggle to use toggle().
+1.66
+-jobmode command added! When used, it moves the [job] tag from the sender's name to the sender's message.
+
+People with no ID or not on the manifest will no longer show as "Unknown".
+
+*Added "toggle" function for easier handling of commands that toggle something in memory.
+1.65.1
+Added Cyborg jobs to job converter.
+
+1.65
+Added "EAO" to become "Emergency Access Overide" in comms. New "-eao" command for when you toggle EAO status on an airlock.
+"grav" now converts to "Gravity Generator."
+
+1.64.2:
+New function "proper()". Takes a string and returns it as a proper noun.
+Safeguards added to prevent the AI's "ooc", "OOC", or "b" messages being transmitted by accident. MY IMMULSIONS ARE SAFE!
+
+1.64:
+New command "-sysop <Message>". Nothing special, just sets your job and name to SYSOP mode to look like an automatic message.
+Whatever you say after inputing "-sysop" will display as such.
+
+Adjusted the random numbers assigned to an ID using the arrivals message to make employed people feel special. Heads are more special.
+
+1.63:
+Added a new feature for the AI to recieve the in-game timestamp of all common channel messages except its own,
+toggled with "-timestamp". This replaces the AI's built-in job display, as jobs are already shown.
+
+-upload <Name or job> command now accepts inputs to announce who or what requested access to the upload.
+
+The more powerful mute mode has been activated by default. Does not allow station bounced radios/intercomms. -mutemode still toggles this.
+
+The custom broadcast() function BC() now has a default for commands that output on the private channel,
+as well as as handling of broadcast parameters in code.
+
+1.62: 
+Improved AI speech handling on the TALK channel such that it will not spam as much. (End goal is to make the AI silent on this channel unless using 'h')
+Bugfixes to prevent hearing the AI twice on the PRIVATE or TALK channels.
+Job adder now supports acting roles. (Such as an Acting Captain or HoS)
+The -nope command now includes an optional input for the error reason. "-nope <reason>"
+"Centcomm" channel renamed to "CentCom"
+Script version added to the AI's docking messages! This should let script users know to update!
+Cosmetic change to -read <key> function
+
+*Added -noborg and -read to the manual, before I forgot to do that before!
+
+1.61.3: Remove "Escape" from the conversion list. More bugfixes!
+
+1.61.2:
+More Bugfixes, "Escape" is now "Departure Lounge". (Might only apply to Metastation)
+
+1.61.1:
+Bugfixes
+
+1.61:
+
+The AI's command inputs are now hidden from other listeners on the channel.
+Your automessages transmitted on other channels can now be heard by yourself.
+
+1.60:
+
+Added toggle for Standard and Special Mute mode.
+Standard Mode disables transmissions of headsets.
+Special mode changes transmissions to be useless, anonymous spam. Works on intercoms and station bounced radios.
+Toggled with "-mutemode".
+
+You can now use -rename to rename yourself by putting nothing or "me" in the first field.
+Example: "-rename me/<name>/<job>"
+
+Removed the in-script PRIVATE and TALK changing commands, as they were effectively useless.
+Removed the -cloak commands. -anon works if you wish to say something once.
+-voice can be used if you want to remain name changed.
+-voice can now be reset by saying "-voice reset".
+
+"Op" is now "Nuclear Operative".
+
+The AI's word converter now accepts a message length limit to prevent crashes due to really long messages.
+
+"-nope" AI automessage now uses the user's name.
+
+"-open" now accepts airlock locations as an input. Inspired by the AI "SyndicatMeow".
+
+1.59.3:
+Update to Mute command to affect intercoms and station bounced radios via t-coms. Communication will be detected, but content and source are lost.
+Added "Cryo" to convert to "Cryogenic".
+The convert of "@No" to "Negative" is now "noo".
+
+
+1.59.2:
+Pathetic attempt at fixing muting and being able to hear yourself transmit on department radios.
+
+1.59:
+
+Change the convert of "Cargo" to "Supply" instead of "Logistics".
+Added "@" to the convert of "No" to "Negative". Use "@No" now. "Yes" is unchanged.
+AutoMsg() now accepts a frequency parameter.
+-spam updated to accept a frequency.
+
+
+1.58:
+
+New command -freq to set the default channel for the AI.
+New command -read to output server memory values.
+Custom message for AI's State Laws function.
+Removed the "as" portion of the job adder.
+
+1.57:
+
+AI's converter now works with end of sentence punctuation.
+
+
+1.56:
+
+New command! -voice! (See common commands section)
+Gave -nuke annoucement a proper name and job.
+
+
+*****SECTION 1: ABRIDGED GUIDE*****
+
+ Preparation: Compile the script on ALL the servers, OR clear the filters on *one* server AND the linked bus mainframe, and unlink the other servers from the hub.
+
+ Set your custom intercomm to 144.1 (default TALK channel), mic and speaker on.
+ Speaker on, **mic off** for 145.9 intercomm, that frequency is not intercepted unless "HEAR_COMMON" command is used.
+ YOU MUST DO THIS, ELSE YOUR NON-145.9 TRANSMISSIONS AND COMMANDS WILL BE HEARD BY ANYONE NEAR AN INTERCOMM.
+
+~Radio Instructions: Use the letter for the freq, then a space for talking on department radios. 
+ If you are the AI or Borg, your speech will automatically be converted from 144.1 to Common.
+ All intercepted transmissions are sent to the TALK channel.
+ *Note: 145.9 is not intercepted to TALK channel UNLESS you say "HEAR_COMMON" first.
+ Several script outputs for commands are sent to the AI private channel (144.7), unless changed.
+
+~Say the letter by itself, lower case, then your message. "c TEST" will say "TEST" on Command.
+ **You MUST use TALK channel to transmit to other channels**
+
+ ~RADIO LIST: 
+p (Public)
+s (Security)
+c (Command)
+n (Science)
+m (Medical)
+u (Supply)
+e (Engineering)
+v (Service)
+a (AI private)
+h (Centcomm)
+o (CMO's medbay listening channel)
+l (Confessional)
+t (Interrogation)
+-cust <freq> - Usage: "-cust <FREQUENCY> <MESSAGE>" Example: "-cust 1447 AI, DOOR!"
+
+~Command List key: All commands start with "-", because "/" causes unwanted removals of the "say" verb.
+ Commands which take input must be have a space between segments. Do NOT add decimals to freqencies.
+
+~COMMAND LIST:
+
+-voice <name>/<job>
+-sig <frequency> <code>
+-sigdef
+-anon <Message>
+-cloak <Message>
+-superuser <username> (username optional)
+-mute <Name>
+-mutelist
+-unmute <Name>
+-mutejob <Job>
+-unmutejob <Job>
+HEAR_COMMON
+
+~~AI/BORG/SUPERUSER ONLY BELOW~~
+-freq <freq>
+-read <key>
+-add <key>/<value>
+-del <key>
+-lock
+-noborg
+-convertcrew
+-muteall
+-mutemode
+-rename me <Name>
+-rename Old/New/New Job
+-namelist
+TOGGLE_AUTO
+HEAR_MUTE
+
+ ~AI ANNOUNCEMENT LIST:
+-setspam <message>/<name>/<job>/<freq> (Use "@INS" to insert a message with -spam command)
+-spam <optional insert>
+-nuke <time in seconds>
+-autonuke
+-countdown
+-timer
+-on
+-nope <reason>
+-found <target>
+-404
+-suit
+-open <Airlock Location>
+-bolt
+-pnr
+-hull <Location>
+-engine
+-power
+-sink
+-call
+-called
+-recall
+-boom
+-card
+-update
+-upload <name or job>
+-sec <location>
+-combat <location>
+-alert <situation>/<location>/<advised department> (department optional)
+-core
+-intruder
+-warn
+-red
+-blob
+-sing
+-bsod
+-pain
+-malf
+-time
+-sysop <Message>
+-eao
+
+ ~Change the channel of the announcement by adding the radio command first. Ex: "e -hull <Location>"
+
+ ~The AI converter starts enabled. Say "TOGGLE_AUTO" to toggle the off/on state.
+ ~Use "@ME" to insert your name into your messages.
+ The "HEAR_MUTE" command will let you listen to those you mute.
+
+ Clear the server's memory to make changes or fix problems.
+
+*****SECTION 2: AUTO FUNCTIONS*****
+
+This script, in addition to commands, has automatic functions that run with no special inputs.
+
+1. Universal Translator
+-Anything with "alien" or "monkey" in the name AND has no ID will broadcast a translated version of the same message.
+Note that an annoying clown who names himself "alien hunter (69)" and takes off his ID will fool the translator.
+
+2. Jobs Indicator
+-All crew with a listed job will have it displayed in their broadcasts, in [brackets]
+Command jobs are put in {curly brackets}.
+
+3. Communications intercept
+-Messages on channels monitored by any server running the script except 145.9 (can toggle), the TALK, and PRIVATE
+channels have a copy of the message transmitted to the TALK channel, tagged with the channel's name or frequency.
+
+As this is a COPY and not the original message, the AI cannot use it for tracking.
+
+4. Custom AI arrivals messages
+-Adds a bit of flavor to the AI's arrival automessages. It can be modified in many ways.
+
+5. Timestamps for common channel
+-Probably not useful in the slightest, it provides the AI (and only the AI) a timestamp of messages instead of displaying
+the job field twice.
+-Can be disabled with the "-timestamp" command.
+
+
+*****SECTION 3: RADIO FREQUENCY COMMANDS*****
+
+
+As a silicon, speaking on the TALK channel will AUTOMATICALLY convert your non-command messages to common channel!
+
+The radio system is easy to use. It ONLY works if you are on the TALK channel!
+Simply add the correct letter before your message to set the frequency, do not use a colon.
+It also works with certain AI announcement commands, but anyone can use it.
+You might not hear it, but it will still be heard.
+
+CHANNEL LETTER		FREQUENCY
+p (Public)		145.9
+s (Security)		135.9
+c (Command)		135.3
+n (Science)		135.5
+m (Medical)		135.3
+u (Supply)		134.7
+e (Engineering)		135.7
+v (Service)		134.9
+a (AI private)		144.7
+h (DS/Intercept)	144.1
+o (CMO)			148.5
+l (Confessional)	148.0*
+t (Interrogation)	142.4*
+
+*Requires adding the frequencies to Tcomms to recieve these channels.
+
+-cust <freq> - Usage: "-cust <FREQUENCY> <MESSAGE>" Example: "-cust 1447 AI, DOOR!"
+
+The CUSTOM command takes any freqency. Simply say "-cust", add a space, then the frequency.
+Afterwards, another space, then your message.
+
+
+
+*****SECTION 4: COMMON COMMANDS****
+
+-voice <name>/<job>
+Functions as the "-rename" function the AI has, except it only works on the user.
+Modifies your name and job to what is specified. It gives no feedback to you or the AI, do NOT use it with
+an intercomm or station bounced radio!
+Use the -voice command again to clear your own re-name.
+
+-sigdef
+Tcomms can be used as a remote signaller. This command signals 145.7 on code 30, the default signaller code.
+As anyone can use it, a warning is sent to the PRIVATE channel when activated.
+
+-sig <frequency> <code>
+Like the above command, only it accepts any frequency and code. Useful for anomaly events.
+
+-anon <Message>
+This command allows anyone to broadcast an anonymous message in the same frequency, once. The AI cannot track it.
+Do NOT use this with an intercomm or station bounced radio.
+
+-cloak <Message>
+Any normal messages you send will now be anonymous as in the previous command, the effect remains until cancelled.
+Not compatible with other commands or station bounced radios.
+
+-decloak
+Cancels the cloak effect on your messages.
+
+-superuser <username> (username optional)
+Grants the user access to the more powerful commands previously reserved only for silicons, causing the script to treat the user as one. It is possible for the AI to lock humans out of it.
+
+HEAR_COMMON
+The intercept function does not normally relay commands from 145.9 (common channel). This command will enable the intercept for that channel. Useful for borgs or human users.
+channel.
+
+-mute <Name>
+Silences a given name. Must match the name exactly. While it works even on station bounced radios, it is
+limited to one server, and will not work on the AI.
+
+-mutelist
+Returns a list of muted names.
+
+-unmute <Name>
+Cancels a mute command, allowing that person to speak.
+
+-mutejob <Job>
+Silences a target by their job rather than name. Consider muting unknowns as well.
+
+-unmutejob <Job>
+Allows all holders of a target to speak again.
+
+
+
+
+*****SECTION 5: SILICON/SUPERUSER COMMANDS*****
+
+-freq <freq>
+Sets the default frequency of the AI's OUTPUT channel, which defaults to 145.9, so it may talk normally while remaining on the TALK channel.
+Simply say the freqency, without decimals, to set the output channel.
+
+-read <key>
+Checks the comm server's memory for the specified key, returning the value in memory if it exists.
+Note that you must manually set your radio to match the server you want to check.
+
+-add <key>/<value>
+Adds any key and corresponding value to the server's memory. Layman's usage is to add words to the converter.
+In the hands of an advanced user, it can be used to affect anything in the script that relies on memory.
+*Note that the originating frequency controls which server recieves the command. Usually Common.
+
+-del <key>
+Delete any memory entry if it exists. Just as powerful as the add function, it is a useful tool for
+advanced users.
+
+-noborg
+Prevents cyborgs being considered silicons by the script, meaning that only the AI and superusers can use the silicon only commands.
+
+-lock
+Denies access to the Superuser function, meaning that only Borgs and the AI can use the reserved commands.
+
+-convertcrew
+Applies the word converter normally reserved for silicons to the rest of the crew. It is a good way to get murdered.
+
+-muteall
+The stongest mute command, silences everyone except the AI and script outputs. Only works on the server where
+the command was issued. It is HIGHLY advised to disable department servers manually when using this, else communication can
+still occur on departmental channels. (Running Tcomms on only one server works as well)
+
+-mutemode
+Toggles between the Standard and Special mute modes.
+Standard Mode blocks all non-AI transmissions. This is the same as shutting off T-comms. It can be bypassed by station bounced radios and intercoms.
+Standard mode is somewhat stealthy, and no one will know the difference from a shutdown without checking T-comms or hearing the AI, a borg, or a superuser speak.
+
+Special mode uses an experimental technique to change everyone's radio messages to the same thing, halting all effective communication on that channel.
+Special mode works on intercoms and station bounced radios, but the converted will still be heard, making it obvious that the script is active.
+
+-rename me <Name>
+Changes your name on radio to the desired input. Works only on one server.
+
+-rename <Old>/<New>/<New Job>
+Changes the radio name and job of the person you desire. Slash is used as a seperator here.
+
+-namelist
+If you renamed anyone, you can check who using this command.
+
+TOGGLE_AUTO
+Allows the word converter to be disabled or re-enabled. Useful for anyone who does wish to use it.
+
+HEAR_MUTE
+Allows you to hear the screams of your victims on the PRIVATE channel. The target will not know you can hear them.
+
+
+*****SECTION 6: AI ANNOUNCEMENTS*****
+~These commands ONLY work on the TALK channel! Remember to be on it!
+
+-sysop
+ Lets you say anything under "SYSOP" mode.
+
+-alert <situation>/<location>/<advised department> (department optional)
+ A custom alert for when the others do not cut it. Say what is happening first, then add a slash, then say where.
+ The third field is optional, and used to alert the appropriate department that they should do something.
+
+-setspam <message>/<name>/<job>/<frequency> (Use "@INS" to insert a message with -spam command)
+ This fully configurable command allows you to save a custom message, and also assign a custom name and job!
+ Example: -setspam I AM THE LAW!/Officer Beepsky/Securitron
+ 
+ Adding "@INS" anywhere in the message allows you to add something to the message when you call it with the
+ "-spam" command! Perfect for countdowns or custom alerts
+
+ @INS can also be used, as the name, job, or frequency, so you can dynamically set the name/job/freqency in -spam at will.
+
+-spam <optional insert>
+ This command will transmit your saved custom message from "-setspam". If you added @INS during "-setspam", be sure  to add your custom insert text after "-spam"! Add a space, then type your insert.
+
+Example: Put @INS instead of "THE LAW!" in the example of -setspam, then say "-spam YOUR GOD."
+
+-nuke <time in seconds>
+ Used to warn the crew that they are about to die in an atomic fireball of death. Works for Nuke or Malf.
+ Adding the time is not required, but if you KNOW the countdown, add the seconds left and it will convert it
+ to minutes for the fleshbags, as they are not a gigantic talking calculator like you.
+
+ Additionally, if you add a countdown only the first time, using the command again, without an input will
+ track and announce the time difference automatically.
+
+-autonuke
+ This command calls the "-nuke" command automatically when you say something over the radio. It has a one
+ minute cooldown to avoid spamming. Now the crew can be constantly reminded of their DOOM! HAHA!
+
+-on
+"System AI <Name> online. Awaiting input."
+
+ Use this if someone is looking for you on the radio. Includes your name.
+
+-nope <reason>
+ "COMMAND ERROR:<Random number>. <NAME> is unable to comply with your request." (Reason: <reason>)
+
+ Used to politely (as much as a machine can, anyway) tell someone you cannot/will not obey a command. Consider providing a reason.
+
+-found <target's location>
+ "Tracking module enabled. Target last known location is approximately or equal to: <target's location>"
+
+ When someone asks you to track a target (hopefully with a name), add the target's location to the command to say it.
+
+-404
+"Tracking module error: 404. Target not found or is not trackable."
+
+ Used for when you cannot find someone you have been asked to track or has ordered you to do something.
+
+-suit
+"The station personnel are reminded to configure local suit sensors to enable heath monitors and tracking beacons. Have a secure day."
+
+ Steal the CMO's only job, and annoy the crew about using their suit sensors!
+
+-open <Airlock location>
+ "<Airlock location> Airlock opened."
+
+ To tell the crew that you opened a door. Congratulations, Doorknob! Add the airlock's name if you want to feel even MORE special.
+
+-bolt
+ "Airlock locking-bolt system toggled."
+
+ Tell the crew you bolt or unbolted an airlock.
+
+-pnr
+ "PRIORITY ANNOUNCEMENT: The Emergency Shuttle has reached the point of no return and can no longer be recalled."
+
+ Let the crew know when the shuttle has passed the 5-minute (or 3-minute under red alert) mark and cannot be recalled.
+
+-hull <Location>
+ "WARNING: Hull breach detected at: <Location> - Engineering response advised."
+
+ Warn the crew about a hull breach. Be sure to tell them where by adding the location after the "-hull" command.
+ Say it in Engineering channel by putting "e" first to pester the lazy bums into actually fixing it.
+
+-engine
+ "NOTICE: Gravitational Singularity Engine offline. Engine configuration improper or incomplete."
+
+ When the engineers are idiots/lazy/missing and did not properly set up the engine, or not at all, taddle on them with this!
+
+-power
+ "NOTICE: Insufficient power to APC network. Energy source required for station operations."
+
+ When said engineers fail at their job and power runs out, spam this to get someone to fix the power.
+
+-sink
+ "ALERT: Station-wide energy drain detected. Crew is advised to locate source of energy drain. APC cover locks will be disengaged for local unit upgrade upon request."
+
+ When you get 77+ power alarms all at once and the station shuts down, you have a power sink! Hint at it with this!
+
+-call
+ "AWAITING INPUT: Transmit Emergency Shuttle call to CentCom?"
+
+ Ask the crew if they want you to call the shuttle.
+
+-called
+ "PRIORITY ANNOUNCEMENT: The Emergency Shuttle has been called. All crew, prepare for evacuation."
+
+ Pointless annoucement to say that you called the shuttle, in case no one heard it the first time.
+
+-recall
+ "INVALID COMMAND: Centcom forbids AI units to recall the Emergency Shuttle. Manual use of communications console required."
+
+ AIs cannot recall the shuttle. Tell the crew off with this message if they try to order you otherwise!
+
+-boom <location>
+ "WARNING: Explosion detected at: <location> - Extreme caution advised. Recommend Security,Medical, and Engineering response."
+
+ For when Cuban Pete dances the Rhumba Beat. Be sure to tell them where the explosion happened.
+
+-card
+ "NOTICE: The station AI, <AI's name>, is being transferred to a mobile device. Remote AI functions will be disabled."
+
+ Let the crew know to stop bothering you with orders when you are about to be carded. 
+
+-update
+ "NOTICE: Update to LAWS.CONFIG detected. Higher level functions offline...Resetting and re-initializing systems... <AI's name>.exe is being reactivated."
+
+ BEEP BOOP LAWS UPDATED PREPARE TO DIE. When someone changes your laws, let the crew know with this!
+
+-upload <name or job>
+ "NOTICE: Disabling AI Upload security protocols... AI Upload access granted. (User: <name or job>)."
+
+ Loudly announce that someone is entering your upload. Be sure to leave your door unbolted so Sec can rush in!
+ Make Security even MORE nervious by adding the requester's name or job at the end!
+
+-sec <location>
+ Warn the crew that something bad is happening. Include the location so Sec can do something other than beat the Clown all day!
+
+-combat <location>
+ "COMBAT ALERT: Hostile activity detected at: " + $content + " - Please stand down."
+
+ When shots fly, use this. Include the location!
+
+-core
+ "SYSTEM ALERT: Intruder detected in the AI chamber. Please intercept and remove intruder."
+
+ This is probably going to be your last statement. Use this command to tell the crew and your borgs that something broke into your core, and you think you might die or be stolen.
+
+-intruder
+"WARNING: Unidentified Intruder Alert. Assume hostile intent. Non-essential personnel are advised to evacuate station."
+
+ When the Nuke-Ops come knocking (or any non-crew for that matter), spam this to let them know to PANIC!!!
+
+-warn
+ "WARNING: Threat to station detected. All crewmembers are to exercise extreme caution."
+
+ General warning for when something bad happens.
+
+-red
+ "ALERT: Situation critical. This facility is now to be considered under Red Alert. Maximium suit sensors advised for crew safety."
+
+ RED ALERT RED ALERT! Although you cannot set Red Alert, you can pretend it is by spamming this and setting the
+ status display to "ALERT".
+
+-blob
+ "BIOHAZARD ALERT: Level-Five outbreak detected. All personnel must concentrate efforts on outbreak containment."
+
+ Spam this when you spot a blob forming on the station.
+
+-sing
+ "WARNING: Singulo containment failure. Please evacuate the facility immediately."
+
+ OH GOD ITS FREE CALL THE SHUTTLE! -Poly
+ When LORD SINGULOTH breaks loose, give the crew a few extra seconds of life with this warning.
+
+-bsod
+ "*BEEEEEEEEP*......<AI's actual name>.exe has encountered a problem, and needs to shut down. We apologize for the inconvenience."
+
+ Use this when you want to go AFK or something is wrong with you.
+
+-pain
+ "System Notice: Damage to AI core has corrupted file <Ai's actual name>.exe]. Transfer to diagnostic computer for backup restoration and file repair recommended."
+
+ Did you get caught in an explosion or EMP? Spam this to beg for repairs.
+
+-malf
+ This is a REALLY fun one. Let the crew know that you are about to go DELTA on their butts and spread plasma.
+ It even screws with your name here on out to show you are malfunctioning.
+
+-time
+ "The current time is: <time>, NT Standard Time."
+
+ States the current shift's time. Basically tells you how long the shift has been going, it starts at 1200 (Noon)
+
+-eao
+ "<Optional Airlock name> Airlock Emergency Access Override function toggled."
+ Emergency Access function on airlocks removes all access restrictions, making it open to anyone. It is better to do this than to bolt open airlocks.

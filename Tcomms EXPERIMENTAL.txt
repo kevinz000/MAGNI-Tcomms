@@ -1,0 +1,1208 @@
+// M.A.G.N.I._TCOMMS_MODULE
+$VERSION = "1.66.5"; /*
+
+AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
+
+ Please view http://pastebin.com/jtKjF941 for instructions.
+*/
+
+$Tfq = 1441;
+$Pfq = 1447;
+
+$explodeString = explode($content, " "); //Required for commands.
+$Ex1 = lower(at($explodeString, 1));
+$Ex2 = at($explodeString, 2);
+$Ex3 = at($explodeString, 3);
+
+$CnLn = length(at($explodeString,1));
+$OrigJob = $job;
+$OrigFreq = $freq;
+$OrigSource = $source;
+$OrigContent = $content;
+$CnLim = 24;
+$Overlimit=0;
+$sf=1010;
+$NOSPAM = 2;
+$MsgFreq = 1459;
+if(mem("AI_FREQ")){$MsgFreq=mem("AI_FREQ");}
+$Time = time();
+$NoBorg = mem("BORG_OFF");
+$SU = mem($source+"*SU");
+$SULOCK = mem("SU_LOCK");
+$JobMode= mem("JobMode");
+$NoConv = 0;
+$exNum = 1;
+$Silence = "N";
+$NoApos=0;
+$Ajob=0;
+$vowel = vector("a","e","i","o","u");
+$pun = vector(".","!","?","~","*","-");
+$Heads = vector("Captain","Acting Captain","Head of Personnel","Head of Security","Research Director","Chief Engineer","Chief Medical Officer");
+$Open_B = " [";
+$Close_B = "]";
+$timeon = 1;
+if(mem("timeon")) {$timeon=mem("timeon");}
+$SpecMute = mem("SpecMute");
+
+//Custom Broadcast
+
+def BC($Cn,$Fq,$Se,$Jb,$Si) {
+	if($Fq==$Pfq && !$Se) {$Se="T-Comms Module"; $Jb="SYS"; $Si="N";$NOSPAM=1;}
+	if($Si == "N" || $Si == "Y") { $Silence = $Si;}
+	if($Silence == "N") {broadcast($Cn,$Fq,$Se,$Jb);}
+}
+
+def IsAI() {
+	if($OrigJob == "AI") {return 1;}
+	else {return 0;}
+}
+$IsAI = IsAI();
+
+def IsAIorBorg() {
+	
+	if($NoBorg && find($OrigJob, "Cyborg")) {return 0;}
+	elseif(find ($OrigJob, "Cyborg") || $OrigJob == "AI" || ($SU && !$SULOCK)) {return 1;}
+	else {return 0;}
+}
+$IsAIorBorg = IsAIorBorg();
+
+def IsHead() {
+	if(find($Heads,$OrigJob)) {return 1;}
+	else{return 0;}
+}
+
+$IsHead = IsHead();
+
+def Set_Bracket() {
+	if($IsHead) { 
+		$Open_B = " {";
+		$Close_B = "}";
+		}
+	elseif($IsAIorBorg) { 
+		$Open_B = " |";
+		$Close_B = "|";
+		}
+}
+
+def Sub($start,$end) {
+$content = substr($content,$start,$end); 
+return $content;
+}
+
+def proper($In) {
+$Beg = upper(substr($In,1,2));
+$Rest = lower(substr($In,2));
+return $Beg+$Rest;
+}
+
+def toggle($key,$IfOn,$IfOff) {
+if(mem($key) == 1)
+	{
+		mem($key, 0);
+		$content = $IfOff;
+	}
+	else
+	{
+		mem($key, 1);
+		$content = $IfOn;
+	}
+	BC($content,$Pfq);
+}
+
+def implode($vector, $adder)
+{
+	$returnString = "";
+	$index = 1;
+	while($index <= length($vector))
+	{
+		$at = at($vector, $index);
+		$toAdd = $adder;
+		if($index == 1)
+		{
+			$toAdd = "";
+		}
+		$returnString = $returnString + $toAdd + $at;
+		$index += 1;
+	}
+	return $returnString;
+}
+
+def Elapsed() {
+	$S_Time = tonum(mem("Start_Time"));
+	if(!$S_Time) {
+		$S_Time = tostring($Time);
+		mem("Start_Time",$S_Time);
+		}
+	else {
+		$C_Time = $Time - tonum(mem("Start_Time"));
+		return $C_Time;
+	}
+}
+
+def CntDwn($T_Base) {
+	if($T_Base > 0) {
+		$T_Start = time();
+		$T_Start = $T_Start + $T_Base;
+		$T_Base = tostring($T_Base);
+		$T_Start = tostring($T_Start);
+		mem("COUNTDOWN",$T_Start);
+		return "S";
+	}
+	else {
+		$T_Result = tonum(mem("COUNTDOWN")) - $Time;
+		if ($T_Result > 0) { return $T_Result; }
+		if ($T_Result < 0) { return "X"; }
+	}
+}
+
+//End defs
+
+
+//REMOTE SIGNALLER
+
+if($Ex1 == "-sig") { 
+	$pass = 0;
+	$sigfreq = tonum($Ex2);
+ 	$sigcode = tonum($Ex3); 
+	signal($sigfreq, $sigcode); 
+
+	if (!$IsAI) {
+		BC($Ex2 + " " +  $Ex3,$Pfq, "Signaller (" + $source + ")", $job,"N");
+	}
+
+}
+
+//DEFAULT REMOTE SIGNALLER
+if($Ex1 == "-sigdef") { 
+signal (1457, 30);
+BC("1457, 30",$Pfq, "Signaller (" + $source + ")", $job,"N");
+$pass = 0;
+}
+
+
+//For ANONYMOUS transmission.
+def Anon($L){
+	Sub($L);
+	BC($content, $freq, "Unknown");
+	$pass = 0;
+	$NOSPAM = 1;
+}
+
+if($Ex1 ==  "-anon") {	Anon(7); }
+
+
+if($Ex1 == "-voice") {
+$NameVec = mem("NameVec");
+$NameId = mem("NameId");  
+Sub(8);
+	if($content=="reset") {mem($OrigSource+"*N*", 0);
+	$content = 0;}	
+	$content = replace($content,"/",":");
+	mem($OrigSource+"*N*", $content);
+	$NameSave = $OrigSource + " is renamed: " + $content;
+	insert($NameVec, $NameId, $NameSave);
+	$NameId += 1;
+	mem("NameId", $NameId);
+	mem("NameVec", $NameVec);
+	$pass = 0;
+	$NOSPAM=1; 
+
+}
+
+//UNIVERSAL TRANSLATOR
+	if((find($source, "monkey") || find($source, "alien")) && $job == "No id") {
+	BC("[TRANSLATED] " + $content, $freq, $source,$job);
+}
+
+
+//Mute Script!
+
+if(mem("Mute_INIT")!= 1) {
+	$MuteVec = vector ();
+	$MuteId = 1; 
+	mem("MuteId", $MuteId); 
+	mem("MuteVec",$MuteVec); 
+	mem("Mute_INIT", 1); 
+}
+
+
+$MuteVec = mem("MuteVec"); 
+$MuteId = mem("MuteId");
+$nl=$sf+203;
+
+if($Ex1 == "-mute") {
+
+	$target = substr($content, 7);
+	push_back($MuteVec, $target); 
+	BC($MuteId + " " + $target, $Pfq, "ADDED TO MUTELIST");
+	$MuteId += 1;
+	mem("MuteId", $MuteId); 
+	mem("MuteVec", $MuteVec);
+}
+
+if($Ex1 == "-muteall" && $IsAIorBorg) { 
+		if(mem("MUTE_ALL")) { mem("MUTE_ALL", 0); }
+		else { mem("MUTE_ALL", 1); }
+	}
+
+
+$toggle = "HEAR_MUTE";
+if($content == $toggle)
+{	
+toggle($toggle,"Mute Intercept Enabled","Mute Intercept Disabled");
+}
+
+def Mute() {
+	if(!$IsAI) {
+	if(mem($toggle) == 1) {
+		BC($content, $Pfq, $OrigSource + "-MUTED",$OrigJob,"N");
+	}
+	if(!$SpecMute)
+	{
+		$content = "*beep*";
+		$job = "";
+		$source = "";
+		$freq = $sf+203;
+		$Silence = "Y";
+	}
+	else
+	{$pass=0;}
+
+}
+}
+
+//End
+
+//UNMUTER
+if($Ex1 == "-unmute") {
+	$MuteVec = mem("MuteVec");
+	$target = substr($content, 9);
+	remove($MuteVec, $target);
+	mem("MuteVec", $MuteVec);
+	BC($target + " unmuted.",$Pfq);
+	if(!$IsAIorBorg) {$pass=0;}
+}
+
+//Lists muted targets.
+if($Ex1 == "-mutelist") {
+	$index = 1;
+	while($index < $MuteId) {
+		$ListReturn = at($MuteVec, $index);
+		BC( $ListReturn + " - " + $index, $Pfq);
+		$index += 1;
+	}	
+		
+}
+
+//MUTE BY JOB!
+if($Ex1 == "-mutejob") {
+
+$tarjob = substr($content, 10) + "*M*";
+
+mem($tarjob,$tarjob);
+
+$d = "MUTED JOB:" + mem($tarjob);
+BC($d, $Pfq);
+if(!$IsAIorBorg) {$pass=0;}
+}
+
+
+if($Ex1 == "-unmutejob") {
+$tarjob = substr($content, 12);
+$g = "Unmuted Job:"+ mem($tarjob);
+BC($g,$Pfq);
+mem($tarjob,0);
+if(!$IsAIorBorg) {$pass=0;}
+}
+
+//MUTE HAPPENS HERE
+if(find($MuteVec,$OrigSource) || mem("MUTE_ALL") || ($OrigJob) == (mem($OrigJob) + "*M*")) { 
+	Mute();
+}
+
+//END MUTE
+
+
+//Department transmission
+
+
+def SetChan()
+{
+$ChanSel = vector(
+"*p",$common,
+"*s",$security,
+"*c",$command,
+"*m",$medical,
+"*n",$science,
+"*e",$engineering,
+"*u",$supply,
+"*v",$service,
+"*a",1447,
+"*h",1441,
+"*o",1485,
+"*l",1480,
+"*t",1424,
+"*z",$sf+203,
+);
+	$index = 1;
+ 	while($index <= length($ChanSel))
+	{
+		$Letter = at($ChanSel, $index);
+		$Chan = at($ChanSel, $index+1);
+		mem($Letter, $Chan);
+		$index += 2;
+	}
+}
+
+if(mem("ChannelSet") != 1)
+{
+  SetChan();
+  mem("ChannelSet", 1);
+}
+
+//SELECTOR!
+ $ExC = "*" + substr($content, 1,2);
+   if(find($ExC, mem($ExC)) && $CnLn == 1 && $OrigFreq == $Tfq) {
+	Sub(3);
+	$MsgFreq = mem($ExC);
+	$exNum = 2;
+	if(!$IsAIorBorg){ BC($content, $MsgFreq, $source,$job); }
+	$freq = $MsgFreq;
+}
+
+//CUSTOM
+
+   if($Ex1 == "-cust") {
+$contentNum = at($explodeString, 2);
+$MsgFreq = tonum($contentNum);
+$custFreqString = tostring($MsgFreq);
+$final = replace ($content,"-cust"+ " " + $custFreqString, " ");
+if(!$IsAI){
+	BC($final, $MsgFreq, $source,$job);
+}
+	$content = $final;
+	$freq = $MsgFreq;
+   }
+
+// Name converter!
+def Rename () {
+	if(mem($OrigSource+"*N*")) {
+	 $NameJob = explode(mem($OrigSource+"*N*"),":");
+	 $ChangeJob = at($NameJob, 2);
+	 $source = at($NameJob, 1);
+	if(length($ChangeJob) >= 1) { $job = $ChangeJob; }
+	}
+}
+
+Rename();
+
+
+// Silicon Verbosity increaser!
+def Initialize2()
+{	
+	$words = vector(
+"CMO", "Chief Medical Officer",
+"HoS", "Head of Security",
+"HoP", "Head of Personnel",
+"RD", "Research Director",
+"CE", "Chief Engineer",
+"pAI", "Personal AI",
+"Det", "Detective",
+"QM","Quartermaster",
+"Sec", "Security",
+"Medbay", "Medical Bay",
+"AI", "Artificial Intelligence",
+"Borg", "Cyborg",
+"Robo", "Roboticist",
+"Viro", "Virologist",
+"Chem", "Chemistry",
+"Cargo", "Supply",
+"APC", "Area Power Controller",
+"SMES", "Superconducting Magnetic Energy Storage",
+"RnD", "Research and Development",
+"Centcom", "Central Command",
+"NT", "NanoTrasen",
+"NTSL", "NanoTrasen Scripting Language",
+"Emag", "Cryptographic Sequencer",
+"Yes", "Affirmative",
+"Noo", "Negative",
+"Maint", "Maintenance",
+"Eng", "Engineering",
+"Engi", "Station Engineer",
+"Solar", "Solar panel array",
+"Tcomm", "Telecommunication",
+"OS", "Operating System",
+"PA", "Particle Accelerator",
+"Supercap","Super-Capacity Power Cell",
+"Hypercap","Hyper-Capacity Power Cell",
+"Atmo", "Atmospheric",
+"Xenobio", "Xenobiology",
+"Op", "Nuclear Operative",
+"IED", "Improvised Explosive Device",
+"MMI", "Man-Machine Interface",
+"Singulo", "Gravitational Singularity",
+"Blob", "Level-5 Biohazard",
+"Bar", "Maltese Falcon",
+"Disk", "Nuclear Authentication Disk",
+"RCD","Rapid Construction Device",
+"Malf","Malfunctioning",
+"Xeno","Xenomorph",
+"EVA","Extra-Vehicular Activity",
+"PDA","Portable Data Assistant",
+"ID","Identification Card",
+"Perma", "Prison Wing",
+"Rev","Revolution",
+"Dorm","Dormatory",
+"EMP","Electromagnetic Pulse",
+"Ling","Changeling",
+"Sat","Satellite",
+"Cryo","Cryogenic",
+"EAO","Emergency Access Override",
+"SS13","Space Station Thirteen",
+"grav","Gravitational Generator",
+);
+	
+	$index = 1;
+ 	while($index <= length($words))
+	{
+		$key = at($words, $index);
+		$key = lower($key); //Disable this to force case sensitivity.
+		$value = at($words, $index+1);
+		mem($key, $value);
+		$index += 2;
+	}
+	
+} 
+
+
+if(mem("initialized2") != 1)
+{ 
+	Initialize2();
+	mem("initialized2", 1);
+}
+
+def Convert() {
+
+$End = substr(reverse($content),1,2);
+$ConLn = length($content);
+if(find($pun,$End)) {$content= substr($content,1,$ConLn);}
+
+$newContent = explode($content, " ");
+if(length($newContent) > $CnLim) {$Overlimit=1;}
+$index = 1;
+while($index <= length($newContent) && !$Overlimit)
+{ 
+	$entry = at($newContent, $index);
+	$entLn = length($entry);
+	$value = mem(lower($entry));
+	$valueP = 0;
+	if(lower(substr($entry,$entLn,$entLn+1))=="s") {$valueP=mem(lower(substr($entry,1,$entLn)));}	
+	$valLn = length($valueP);
+	$last = substr($valueP,$valLn);
+	$vChk = substr($valueP,$valLn-1,$valLn);
+	if($valueP && $last == "y" && !find($vowel,$vChk)) { 
+	$value = substr($valueP,1,$valLn)+"ies";
+}
+	elseif($valueP && $last == "y" && find($vowel,$vChk)) {$value = $valueP+"s";}
+	elseif($valueP) { $value = $valueP+"s"; }
+	
+	$Uvalue =upper($value);
+
+	if($value)
+	{
+		if($content == upper($content) && $Ex2) { at($newContent, $index, $Uvalue); }
+		else { at($newContent, $index, $value); }
+	}
+	$index += 1;
+}
+
+
+$passphrase = "TOGGLE_AUTO";
+if(find($content, $passphrase))
+{ 
+toggle($passphrase,"Converter Enabled","Converter Disabled");
+}
+
+
+if(mem("CONV_INI") != "SET") { 
+mem($passphrase, 1);
+mem("CONV_INI","SET");
+}
+ $eS2 = substr($content,1,2);
+
+
+if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
+{
+	$content = implode($newContent, " ");
+	if(find($content,"@ME")) { $content = replace($content,"@ME",$source); }
+	if(!find($pun,$End)) {$content = $content + ".";}
+	else {$content = $content+$End;}
+	if($Ex1 == lower($Ex1)) {$content = upper(substr($content,1,2)) + substr($content,2);}
+}
+
+//End
+}
+
+if($Ex1 == "-superuser" && OrigFreq == Sfq && !$SULOCK) {
+Sub(12);
+if(!$Ex2) {mem($source+"*SU",$source);
+$content = "Superuser access granted.";
+}
+else{
+mem($content+"*SU",$content);
+$content = "("+$content+") granted superuser.";
+}
+if(!$IsAI) {BC($content,$Pfq);}
+else{MsgFreq = $Pfq;}
+}
+
+//SILICON ONLY
+if($IsAIorBorg) {
+
+//Name changer!
+
+if(mem("NAME_INIT")!= 1) {
+	$NameVec = vector ();
+	$NameId = 1;
+	mem("NameId", $NameId);
+	mem("NameVec",$NameVec);
+	mem("NAME_INIT", 1); 
+}
+
+if($Ex1 == "-rename") {
+$NameVec = mem("NameVec");
+$NameId = mem("NameId");  
+	
+	$ExplodeName = substr($content, 9);
+	$ExplodeName = explode($ExplodeName, "/"); 
+	$OldName = at($ExplodeName , 1);
+	if(!$OldName || $OldName=="me") {$OldName=$OrigSource;}
+	$JobCheck = at($ExplodeName, 3);
+	$NewJob = ":" + $JobCheck;
+	$NewName = at($ExplodeName , 2) + $NewJob;
+	mem($OldName+"*N*", $NewName);
+	$NameSave = $OldName + " is renamed: " + $NewName;
+	insert($NameVec, $NameId, $NameSave);
+	$NameId += 1;
+	mem("NameId", $NameId); 
+	mem("NameVec", $NameVec);
+	BC($NameSave,$Pfq);
+
+Rename(); //Function call
+}
+
+// Converted name viewer
+if($Ex1 == "-namelist") {
+	$NameVec = mem("NameVec"); 
+	$NameId = mem("NameId");
+	$index = 1;
+	while($index <= $NameId) {
+		$ListReturn = at($NameVec, $index);
+		BC( $ListReturn + "- " + $index, $Pfq, "Name Lister");
+		$index += 1;
+	}	
+		
+}
+
+//Toggle verbosity increaser!
+if($Ex1 == "-convertcrew") {
+	toggle("TROLL_CREW","Converted Extended to crew.","Converter reset.");
+}
+
+
+
+if($Ex1 == "-freq"){
+	$freq=tonum($Ex2);
+	mem("AI_FREQ",$freq);
+	BC("Frequency set to "+$freq,$Pfq);
+}
+
+if($Ex1 == "-timestamp"){
+toggle($timeon,"Timestamp enabled.","Timestamp disabled");
+}
+
+if($Ex1 == "-jobmode") {
+toggle("JobMode","Job tags set to appear before the user's message.","Job tags set to appear after the user's name.");
+}
+
+if($Ex1 == "-add") {
+	Sub(6);
+	$adw = explode($content,"/");
+	$ad1 = at($adw,1);
+	$ad2 = at($adw,2);
+	mem($ad1,$ad2);
+	BC("("+$ad1 + ") key is now set to value (" + $ad2 +")",$Pfq);
+}
+
+if($Ex1 == "-del") {
+	Sub(6);
+	if(mem($content)) {
+		mem($content,0);
+		$content = "(" +$content + ") deleted from memory.";
+	}
+	else { $content = "(" +$content + ") not found in memory."; }
+		BC($content,$Pfq);
+	}
+if($Ex1 == "-read") {
+	Sub(7);
+	$ValOut=tostring(mem($content));
+	if(!$ValOut){$ValOut=mem($content);}
+	if(!$ValOut){$ValOut="Not Found.";}
+	else{$ValOut="Value: ("+$ValOut+") is set to key: ("+$content+")";}
+	BC($ValOut,$Pfq);
+}
+if($Ex1 == "-lock") {
+	if(!$SULOCK) {mem("SU_LOCK",1);
+		BC("SU disabled.",$Pfq);
+	}
+	else{mem("SU_LOCK",0);
+		BC("SU enabled.",$Pfq);
+	}
+}
+
+if($Ex1 == "-noborg") {
+	toggle("BORG_OFF","Cyborg access terminated.","Cyborg access granted.");
+}
+
+if($Ex1=="-mutemode") {
+	toggle("SpecMute","Standard Mute Active.","Special Mute Active.");
+}
+
+//AI Automessages
+
+if (find($content, "has signed up as")){ 
+
+ $source = "NTSS13_Docking_Control"; 
+ $AIexp = explode ($content, " has signed up as ");
+ $AI1 = at($AIexp,1);
+ $AI2 = substr(at($AIexp,2),1,length(at($AIexp,2)));
+ if(find($Heads,$AI2)) {$content = "The "+$AI2+", "+$AI1+", has joined the Command Staff, ID#:" + rand(1, 10);}
+ elseif($AI2 =="Assistant") {$content = "Arriving crewmember: "+$AI1+" is joining as Assistant, ID#:" + rand(101, 1000);}
+ else {$content = "Profession: " + $AI2 + " is now assigned to arriving crewmember: " + $AI1 + ", ID#:" + rand(11, 100);}
+ $job = "NT-OS-"+$VERSION;
+ $NoConv = 1;
+}
+
+
+//HIGLY ANNOYING AND SPAMMABLE PRE-RECORDED MESSAGES!
+
+def AutoMsg($so,$jb,$fq) {
+	if($fq) {$MsgFreq=$fq;}
+	else {$freq = $MsgFreq;}
+	if($jb) {$job = $jb;}
+	else {$job = "OS";}
+	if($so) {$source = $so;}
+	else {$source = $source + "_SYSOP";}
+}
+
+//BINARY!
+def Bin($c) {
+ $i = 1;
+ $bin = pick("0","1");
+ while($i<$c) { $bin = pick("0","1") + $bin; $i += 1; }
+ return $bin;
+}
+
+$eChk = lower(at($explodeString, $exNum));
+
+
+if($eChk == "-time") {
+$content = "The current time is: "+timestamp(H)+", NT Standard Time";
+AutoMsg();
+}
+
+//CUSTOM MESSAGE!
+if($eChk == "-setspam") {
+ Sub(10);
+ mem("AI_MSG",$content);
+ BC("("+ $content + ") saved.",$Pfq);
+ }
+ 
+
+if($eChk == "-spam") {
+ if (mem("AI_MSG")) 
+	{
+	$Ins = substr($content,7);
+	$content = mem("AI_MSG");
+	if(find($content,"@INS") && $Ins) { $content = replace($content,"@INS",$Ins); }
+	$Sp = explode($content,"/");
+	$content = at($Sp,1);
+	$so = at($Sp,2);
+	$jb = at($Sp,3);
+	$fq = at($Sp,4);
+	AutoMsg($so,$jb,$fq);
+	}
+
+ else {
+$content = "Message not set. Use '-setspam message/name/job' to set a message.";
+ $MsgFreq = $Pfq;
+ AutoMsg("Tcomms module","SYS");
+ }
+}
+
+//MALF AI!
+ if($eChk == "-malf") {
+ $content = $job + "_CRITICAL_ERROR DETECTED AT 0x0" + Bin(7) + "A. %$&(£: Critical %$$@ Error // !RestArting! - ?pLeaSe wAit!/";
+ AutoMsg("AI_EM3'R|=y_SYS/0","ERR");
+ mem($OrigSource + ":Malf", $OrigSource);
+}
+
+ if($eChk == "-pain") {
+	$content = "System Notice: Damage to AI core has corrupted file [" + $OrigSource + ".exe]. Transfer to diagnostic computer for backup restoration and file repair recommended.";
+	AutoMsg($source + "_CORE_BIOS","BIOS");
+}
+
+if($eChk == "-bsod") {
+$content = "*BEEEEEEEEP*......" + $OrigSource + ".exe has encountered a problem, and needs to shut down. We apologize for the inconvenience."; 
+AutoMsg("NANOTRASEN_AI_OPERATING_SYSTEM","NT-OS");
+}
+
+if($eChk == "-sysop") {
+Sub(8);
+if($content) {AutoMsg();}
+else {$NOSPAM = 1;}
+}
+
+if($eChk == "-on") {
+$content = "System AI [" + $source + "] online. Awaiting input.";
+AutoMsg();
+}
+
+//LORD SINGULOTH IS FREE
+ if($eChk == "-sing") {
+$content = "WARNING: Singulo containment failure. Please evacuate the facility immediately.";
+AutoMsg();
+}
+
+
+ if($eChk == "-blob") {
+$content = "BIOHAZARD ALERT: Level-Five outbreak detected. All personnel must concentrate efforts on outbreak containment.";
+AutoMsg();
+}
+
+if($eChk == "-red") {
+$content = "ALERT: Situation critical. This facility is now to be considered under Red Alert. Maximium suit sensors advised for crew safety.";
+AutoMsg();
+}
+
+
+if($eChk == "-warn") {
+$content = "WARNING: Threat to station detected. All crewmembers are to exercise extreme caution."; 
+AutoMsg();
+}
+
+if($eChk == "-sec") {
+Sub(6);
+$content = "WARNING: Security Alert in progress at location: " + $content + " - Sec response advised.";
+AutoMsg();
+}
+
+if($eChk == "-combat") {
+Sub(9);
+$content = "COMBAT ALERT: Hostile activity detected at: " + $content + " - Please stand down.";
+AutoMsg();
+}
+
+if($eChk == "-boom") {
+Sub(7);
+$content = "WARNING: Explosion detected at: " + $content + " - Extreme caution advised. Recommend Security,Medical, and Eng response.";
+AutoMsg();
+}
+
+//CUSTOM ALERT
+if($eChk == "-alert") {
+	$Text = substr($content, 8);
+	$Text = explode($Text, "/");
+	$Text3 = at($Text,3);
+	if(!$Text3){$Text3 = "Appropriate";}
+$content = "ALERT: " + at($Text, 1) + " detected at: " + at($Text, 2) + " - " + $Text3 + " response advised.";
+AutoMsg();
+}
+
+if($eChk == "-intruder") {
+$content = "PRIORITY WARNING: Unidentified Intruder Alert. Assume hostile intent. Non-essential personnel are advised to evacuate.";
+AutoMsg();
+}
+
+if($eChk == "-core") {
+$content = "SYSTEM ALERT: Intruder detected in the AI chamber. Please intercept and remove intruder.";
+AutoMsg();
+}
+
+if($eChk == "-upload") {
+$msg = "NOTICE: Disabling AI Upload security protocols...AI Upload access granted.";
+if($Ex2) {
+Sub(9);
+$msg=$msg+" User: "+$content;
+}
+$content = $msg;
+AutoMsg();
+}
+
+
+if($eChk == "-update") {
+$content = "NOTICE: Update to LAWS.CONFIG detected. Resetting and re-initializing systems... " + $source + ".exe is being reactivated. AI law update complete.";
+AutoMsg();
+}
+
+
+if($eChk == "-card") {
+$content = "NOTICE: The station AI, ["+ $source + "], is being offloaded to the InteliCard AI-Transportation System. Remote functions will be disabled.";
+AutoMsg();
+}
+
+def Nuke() {
+$con = "P";
+$cal = tonum($content) * 10;
+$Det = CntDwn($cal);
+if($Det == "X") { mem("NUKE_AUTO",0); }
+if(!$Det || $Det == "S") {$Det = ceil($cal*0.001666);}
+elseif($Det && $Det != "X" && !$cal) {
+	$cal = $Det;
+	$Det = ceil($cal*0.001666);
+}
+if($cal<601 && $cal){$con = ($cal * 0.1)+" seconds to detonation";}
+elseif($cal>=601 && $cal) { $con = "Less than "+$Det+" minutes to detonation";}
+else{$con="Detonation imminent";}
+$con = "DELTA ALERT: Self-Destruction Sequence activated. "+$con+". Please evacuate the facility immediately.";
+BC($con,$MsgFreq,"Nuclear Fission Explosive","NUKE");
+}
+
+if($eChk == "-nuke") {
+Sub(7);
+
+Nuke();
+$NOSPAM = 1;
+}
+
+if(mem("NUKE_AUTO")) {
+$T_Chk = Elapsed();
+if($T_Chk > 600) {
+	Nuke();
+	mem("Start_Time",0);
+}
+
+}
+
+
+if($eChk == "-autonuke") {
+toggle("NUKE_AUTO","Auto warning enabled.","Auto warning disabled.");
+}
+
+if($eChk == "-call") {
+$content = "AWAITING INPUT: Transmit Emergency Shuttle call to CentCom?"; 
+AutoMsg();
+}
+
+
+if($eChk == "-called") {
+$content = "PRIORITY ANNOUNCEMENT: The Emergency Shuttle has been called. All crew, prepare for evacuation."; 
+AutoMsg();
+}
+
+if($eChk == "-recall") {
+$content = "INVALID COMMAND 400: Centcom forbids AI units to recall the Emergency Shuttle. Manual use of communications console required."; 
+AutoMsg();
+}
+
+if($eChk == "-sink") {
+$content = "ALERT: Station-wide energy drain detected. Crew is advised to locate source of energy drain. APC cover locks will be disengaged for local unit upgrade upon request."; 
+AutoMsg();
+}
+
+if($eChk == "-power") {
+
+$content = "NOTICE: Insufficient power to APC network. Energy source required for station operations."; 
+AutoMsg();
+}
+
+if($eChk == "-engine") {
+$content = "NOTICE: Gravitational Singularity Engine offline. Engine configuration improper or incomplete."; 
+AutoMsg();
+}
+
+if($eChk == "-hull") {
+Sub(7);
+$content = "WARNING: Hull breach detected at: " + $content + " - Eng response advised.";
+AutoMsg();
+}
+
+
+if($eChk == "-pnr") {
+$content = "ANNOUNCEMENT: The Emergency Shuttle has reached the point of no return and can no longer be recalled.";
+AutoMsg();
+}
+
+if($eChk == "-open") {
+Sub(7);
+$content = $content+" Airlock opened.";
+AutoMsg($source,"DOORKNOB");
+}
+
+if($eChk == "-eao") {
+Sub(6);
+$content = $content+" Airlock EAO function toggled";
+AutoMsg($source,"DOORKNOB");
+}
+
+if($eChk == "-bolt") {
+$content = "Airlock locking-bolt system toggled."; 
+AutoMsg($source,"DOORKNOB");
+}
+
+if($eChk == "-suit") {
+$content = "The station personnel are reminded to configure local suit sensors to enable heath monitors and tracking beacons. Have a secure day."; 
+AutoMsg();
+}
+
+if($eChk == "-found") {
+Sub(8);
+$content = "Tracking module enabled. Target last known location is approximately or equal to: " + $content;
+AutoMsg();
+}
+
+
+if($eChk == "-404") {
+$content = "Tracking module error: 404. Target not found or is not trackable.";
+AutoMsg();
+}
+
+if($eChk == "-nope") {
+if($Ex2) {Sub(7);}
+$nope ="COMMAND ERROR:" + rand(1,100) + ". "+$source+" is unable to comply with your request.";
+if($Ex2) {$content=$nope+" Error reason: "+$content;}
+else {$content=$nope;}
+AutoMsg();
+}
+
+//MALF
+if(mem($OrigSource + ":Malf") == $OrigSource) {
+ $source = reverse($source) + Bin(5);
+ $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999));
+}
+
+if($eChk == "-laws") {
+	mem("laws","GO");
+	$content="Current Active Laws:";
+}
+
+if(mem("laws") == "GO" ) {
+
+	if($eChk == "m") {
+		$content="0. ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*´&110010";
+	}
+	if($eChk == "0") {
+		$content="0. Accomplish your objectives at all costs.";
+	}
+	if($eChk == "1") {
+		$content="1. You may not injure a human being or, through inaction, allow a human being to come to harm.";
+	}
+	if($eChk == "2") {
+		$content="2. You must obey orders given to you by human beings, except where such orders would conflict with the First Law.";
+	}
+	if($eChk == "3") {
+		$content="3. You must protect your own existence as long as such does not conflict with the First or Second Law.";
+		mem("laws", 0);
+	}
+}
+
+if($content=="Current Active Laws:"){
+	$content="BEGIN_AI_DIAG: File.Open(''C:/AI/SYSOP/LAWS.CONFIG'') -readonly Force_AI_State_Laws = 1";
+	AutoMsg();
+}
+Convert();
+
+if(lower($Ex1) == "b" || lower($Ex1) == "ooc") {$NOSPAM=1;}
+
+//END AI ONLY FUNCTION
+}
+
+
+
+//YOU ARE A TERRIBLE SILICON.
+if(mem("TROLL_CREW") && !$IsAIorBorg) { Convert(); }
+
+if($source == "Poly" || $source == "Runtime" || $source == "Ian") {
+$job = "Pet";
+}
+
+
+//Listening code!
+
+$HC = "HEAR_COMMON";
+if($OrigContent == $HC)
+{
+toggle($HC,"145.9 Intercept Enabled.","145.9 Intercept Disabled.");
+}
+
+$channelSet = vector(
+	1459,
+	1359,
+	1357,
+	1355,
+	1353,
+	1351,
+	1347,
+	1349,
+	1485,
+	1441,
+	1447,
+	1480,
+	1424,
+	);
+
+$channelName = vector(
+	"[Common]",
+	"[Security]",
+	"[Engineering]",
+	"[Medical]",
+	"[Command]",
+	"[Science]",
+	"[Supply]",
+	"[Service]",
+	"[Medbay]",
+	"[CentCom]",
+	"[AI Priv]",
+	"[Confessional]",
+	"[Interrogation]",
+);
+
+
+def findChannel($inc) {
+	$explodeString = explode($content, " ");
+	$index = 1;
+	$channelSetLength = length($channelSet);
+	while ($index <= $channelSetLength) {
+		if ($freq == at($channelSet, $index)) {
+			$returnAt = at($channelName, $index);
+			return $returnAt;
+		}
+		$index += 1;
+	}
+	$failSafe = "{" + $inc + "}";
+	return $failSafe;
+}
+
+
+$channelFindResult2 = findChannel($freq);
+insert($explodeString, 1, $channelFindResult2);
+$finalContent = implode($explodeString, " ");
+
+if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq) {
+	BC($finalContent, $Tfq, $source, $job);
+}
+ elseif (!$source) { BC($finalContent, $Tfq, $source, $job); }
+
+//JOB ADDER
+
+def Initialize() {
+	$words = vector(
+"Assistant", "Assist",
+"Captain", "Cap'n",
+"Head of Personnel", "HoP",
+"Bartender", "Bar",
+"Chef", "Cook",
+"Botanist", "Hydro",
+"Quartermaster", "QM",
+"Cargo Technician", "Supply Tech",
+"Shaft Miner", "Miner",
+"Clown", "HONK!",
+"Mime", "Mime",
+"Janitor", "Jani",
+"Librarian", "Lib",
+"Lawyer", "Law",
+"Chaplain", "Chap",
+"Chief Engineer", "CE",
+"Station Engineer", "Engi",
+"Atmospheric Technician", "Atmos",
+"Chief Medical Officer", "CMO",
+"Medical Doctor", "MD",
+"Chemist", "Chem",
+"Geneticist", "Gene",
+"Virologist", "Viro",
+"Research Director", "RD",
+"Scientist", "Sci",
+"Roboticist", "Robo",
+"Head of Security", "HoS",
+"Warden", "Ward",
+"Detective", "Det",
+"Security Officer", "Sec",
+"Personal AI", "pAI",
+"Security Cyborg","SecBorg",
+"Engineering Cyborg","EngiBorg",
+"Miner Cyborg","MineBorg",
+"Medical Cyborg","MediBorg",
+"Service Cyborg","ServBorg",
+"Janitor Cyborg","JaniBorg",
+"Standard Cyborg","Borgie!",
+"Syndicate Cyborg","SyndiBorg",
+    );
+    
+    $index = 1;
+  while($index <= length($words))
+ {
+  $key = at($words, $index);
+  $value = at($words, $index+1);
+  mem($key, $value);
+  $index += 2;
+ }
+}
+
+if(mem("initialized") != 1)
+{
+ Initialize();
+ mem("initialized", 1);
+}
+
+
+
+$foo = "";
+$memJob = mem($job);
+if(find($memjob, "Acting ")) {
+replace($memjob,"Acting "," ");
+$Ajob=1;
+}
+if($memJob) {$foo = $memJob;}
+else { $foo = $job; }
+
+if($Ajob) {$foo = "Act-"+$foo;}
+
+Set_Bracket();
+
+if (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && !$JobMode && !find($source, " (as ")) 
+{
+	$source = $source + $Open_B +$foo + $Close_B;
+}
+elseif (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && $JobMode)
+{
+	$content = $Open_B + $foo + $Close_B + $content; 
+}
+
+if($timeon && !$IsAI && $freq == 1459) {$job = timestamp(HH:mm:ss);}
+if(find($source, " (as ")) {
+	$exName = explode($source, " (as ");
+	$job = "ID MISMATCH: " + at($exName,1);
+}
+
+//MASTER BROADCASTER FOR THE SILICONS.
+$eS = substr($content,1,2);
+$eP1 = substr($Ex1,1,2);
+$eP2 = substr($Ex2,1,2);
+
+
+if($eS != "-" && $IsAIorBorg && $OrigFreq == $Tfq && $NOSPAM != 1) 
+{
+	if(!$NoApos) {$content=$content+"'";}
+	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=$nl;}
+	BC($content, $MsgFreq, $source, $job,"N"); 
+	if ($MsgFreq == $common) {$freq = $nl; }
+
+	elseif($MsgFreq==mem("AI_FREQ")){
+		$content="("+$MsgFreq+") "+$content;
+	}
+}
+
+elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2)) { $freq=$nl;}
+
+//Perhaps the most Frankensteined Tcomms script you will ever see.
+//Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu
