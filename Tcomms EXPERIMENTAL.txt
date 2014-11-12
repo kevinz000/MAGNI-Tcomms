@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.66.6"; /*
+$VERSION = "1.66.7"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -21,6 +21,7 @@ $OrigSource = $source;
 $OrigContent = $content;
 $CnLim = 24;
 $Overlimit=0;
+$NonDept = 0;
 $sf=1010;
 $NOSPAM = 2;
 $MsgFreq = 1459;
@@ -30,6 +31,7 @@ $NoBorg = mem("BORG_OFF");
 $SU = mem($source+"*SU");
 $SULOCK = mem("SU_LOCK");
 $JobMode= mem("JobMode");
+$Intercept= mem("Intercept");
 $NoConv = 0;
 $exNum = 1;
 $Silence = "N";
@@ -615,6 +617,10 @@ if($Ex1 == "-freq"){
 	BC("Frequency set to "+$freq,$Pfq);
 }
 
+if($Ex1 == "-intercept") {
+	toggle("Intercept",$Pfq + " Radio intercept enabled.",$Pfq + "Radio intercept disabled.");
+}
+
 if($Ex1 == "-timestamp"){
 toggle($timeon,"Timestamp enabled.","Timestamp disabled");
 }
@@ -1027,7 +1033,7 @@ $job = "Pet";
 
 //Listening code!
 
-$HC = "HEAR_COMMON";
+$HC = "-common";
 if($OrigContent == $HC)
 {
 toggle($HC,"145.9 Intercept Enabled.","145.9 Intercept Disabled.");
@@ -1059,7 +1065,7 @@ $channelName = vector(
 	"[Supply]",
 	"[Service]",
 	"[Medbay]",
-	"[CentCom]",
+	"[Deathsquad]",
 	"[AI Priv]",
 	"[Confessional]",
 	"[Interrogation]",
@@ -1073,6 +1079,8 @@ def findChannel($inc) {
 	while ($index <= $channelSetLength) {
 		if ($freq == at($channelSet, $index)) {
 			$returnAt = at($channelName, $index);
+			if($index >= 9) {
+				$NonDept = 1;}
 			return $returnAt;
 		}
 		$index += 1;
@@ -1086,7 +1094,7 @@ $channelFindResult2 = findChannel($freq);
 insert($explodeString, 1, $channelFindResult2);
 $finalContent = implode($explodeString, " ");
 
-if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq) {
+if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq && $Intercept  || $NonDept) {
 	BC($finalContent, $Tfq, $source, $job);
 }
  elseif (!$source) { BC($finalContent, $Tfq, $source, $job); }
