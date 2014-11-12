@@ -1,5 +1,6 @@
 Welcome to the manual for the Tcomms script that is so big, it actually needs a manual!
 
+https://github.com/GunHog/MAGNI-Tcomms for the GITHUB!
 View http://pastebin.com/raw.php?i=LyFDdwAb for the source code. Check regularly for updates!
 
 Author Note: Please do not abuse the -malf,-nuke, or other 'WE ARE ALL GOING TO DIE!' functions. Use them ONLY IF you are actually malf, and going to explode the station or know that Nuke Ops have set you up the bomb.
@@ -16,6 +17,14 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.66.7
+You can now toggle the department frequency intercept that covers the channels the AI can hear through its headset. Use "-intercept".
+The command to intercept Common channel is now "-common"
+CentCom channel is now properly named "Deathsquad".
+
+1.66.6
+Bugfixes, "RPED" and "Telco" conversions added, muting made effective again.
+
 1.66.5
 Silicons (AI, Borgs) are now denoted with the | | brackets when speaking.
 
@@ -173,7 +182,7 @@ u (Supply)
 e (Engineering)
 v (Service)
 a (AI private)
-h (Centcomm)
+h (Deathsquad)
 o (CMO's medbay listening channel)
 l (Confessional)
 t (Interrogation)
@@ -195,7 +204,8 @@ t (Interrogation)
 -unmute <Name>
 -mutejob <Job>
 -unmutejob <Job>
-HEAR_COMMON
+-common
+-intercept
 
 ~~AI/BORG/SUPERUSER ONLY BELOW~~
 -freq <freq>
@@ -353,9 +363,12 @@ Cancels the cloak effect on your messages.
 -superuser <username> (username optional)
 Grants the user access to the more powerful commands previously reserved only for silicons, causing the script to treat the user as one. It is possible for the AI to lock humans out of it.
 
-HEAR_COMMON
+-common
 The intercept function does not normally relay commands from 145.9 (common channel). This command will enable the intercept for that channel. Useful for borgs or human users.
 channel.
+
+-intercept
+Disabled the intercept function for standard department frequencies to avoid the AI hearing messages it can normally hear though its built in radio.
 
 -mute <Name>
 Silences a given name. Must match the name exactly. While it works even on station bounced radios, it is
@@ -373,6 +386,7 @@ Silences a target by their job rather than name. Consider muting unknowns as wel
 -unmutejob <Job>
 Allows all holders of a target to speak again.
 
+-intercept
 
 
 
