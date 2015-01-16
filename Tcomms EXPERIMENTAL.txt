@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.66.8"; /*
+$VERSION = "1.67"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -328,20 +328,20 @@ if(find($MuteVec,$OrigSource) || mem("MUTE_ALL") || ($OrigJob) == (mem($OrigJob)
 def SetChan()
 {
 $ChanSel = vector(
-"*p",$common,
-"*s",$security,
-"*c",$command,
-"*m",$medical,
-"*n",$science,
-"*e",$engineering,
-"*u",$supply,
-"*v",$service,
-"*a",1447,
-"*h",1441,
-"*o",1485,
-"*l",1480,
-"*t",1424,
-"*z",$sf+203,
+"-p",$common,
+"-s",$security,
+"-c",$command,
+"-m",$medical,
+"-n",$science,
+"-e",$engineering,
+"-u",$supply,
+"-v",$service,
+"-o",1447,
+"-h",1441,
+"-y",1485,
+"-l",1480,
+"-t",1424,
+"-z",$sf+203,
 );
 	$index = 1;
  	while($index <= length($ChanSel))
@@ -360,8 +360,9 @@ if(mem("ChannelSet") != 1)
 }
 
 //SELECTOR!
- $ExC = "*" + substr($content, 1,2);
-   if(find($ExC, mem($ExC)) && $CnLn == 1 && $OrigFreq == $Tfq) {
+ $ExC = substr($content, 1,3);
+broadcast($ExC);
+   if(find($ExC, mem($ExC)) && $CnLn == 2 && $OrigFreq == $Tfq) {
 	Sub(3);
 	$MsgFreq = mem($ExC);
 	$exNum = 2;
@@ -460,6 +461,7 @@ def Initialize2()
 "EAO","Emergency Access Override",
 "SS13","Space Station Thirteen",
 "grav","Gravitational Generator",
+"ERT","Emergency Response Personnel",
 );
 	
 	$index = 1;
@@ -1107,7 +1109,7 @@ def Initialize() {
 "Captain", "Cap'n",
 "Head of Personnel", "HoP",
 "Bartender", "Bar",
-"Chef", "Cook",
+"Cook", "Chef",
 "Botanist", "Hydro",
 "Quartermaster", "QM",
 "Cargo Technician", "Supply Tech",
@@ -1141,6 +1143,7 @@ def Initialize() {
 "Service Cyborg","ServBorg",
 "Janitor Cyborg","JaniBorg",
 "Standard Cyborg","Borgie!",
+"Default Cyborg","Borgie!",
 "Syndicate Cyborg","SyndiBorg",
     );
     

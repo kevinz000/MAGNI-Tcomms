@@ -17,6 +17,16 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.67
+Department transmission script changed to require "-" before the letter. (This was broken when an update forced all speech to start with a capital letter)
+Added "ERT" translation to "Emergency Response Personnel" (HONK!)
+"Cook" is now "Chef" in job display.
+"Default Cyborg" now translates to "Borgie!" as "Standard Cyborg" job does.
+AI Private channel letter changed to "-o" to match the ingame setting.
+
+1.66.8
+Bugfixes
+
 1.66.7
 You can now toggle the department frequency intercept that covers the channels the AI can hear through its headset. Use "-intercept".
 The command to intercept Common channel is now "-common"
@@ -173,19 +183,19 @@ Gave -nuke annoucement a proper name and job.
  **You MUST use TALK channel to transmit to other channels**
 
  ~RADIO LIST: 
-p (Public)
-s (Security)
-c (Command)
-n (Science)
-m (Medical)
-u (Supply)
-e (Engineering)
-v (Service)
-a (AI private)
-h (Deathsquad)
-o (CMO's medbay listening channel)
-l (Confessional)
-t (Interrogation)
+-p (Public)
+-s (Security)
+-c (Command)
+-n (Science)
+-m (Medical)
+-u (Supply)
+-e (Engineering)
+-v (Service)
+-o (AI private)
+-h (Deathsquad)
+-y (CMO's medbay listening channel)
+-l (Confessional)
+-t (Interrogation)
 -cust <freq> - Usage: "-cust <FREQUENCY> <MESSAGE>" Example: "-cust 1447 AI, DOOR!"
 
 ~Command List key: All commands start with "-", because "/" causes unwanted removals of the "say" verb.
@@ -278,18 +288,17 @@ HEAR_MUTE
 This script, in addition to commands, has automatic functions that run with no special inputs.
 
 1. Universal Translator
--Anything with "alien" or "monkey" in the name AND has no ID will broadcast a translated version of the same message.
-Note that an annoying clown who names himself "alien hunter (69)" and takes off his ID will fool the translator.
+Any language that humans cannot understand will be converted to human speech! It is one way, however.
 
 2. Jobs Indicator
 -All crew with a listed job will have it displayed in their broadcasts, in [brackets]
-Command jobs are put in {curly brackets}.
+Command jobs are put in {curly brackets}. Silicons are in |vertical brackets|.
 
 3. Communications intercept
 -Messages on channels monitored by any server running the script except 145.9 (can toggle), the TALK, and PRIVATE
 channels have a copy of the message transmitted to the TALK channel, tagged with the channel's name or frequency.
 
-As this is a COPY and not the original message, the AI cannot use it for tracking.
+As this is a COPY and not the original message, the AI cannot use it for tracking. -Note, this function is off by default due to AIs have their own radio.
 
 4. Custom AI arrivals messages
 -Adds a bit of flavor to the AI's arrival automessages. It can be modified in many ways.
@@ -311,19 +320,19 @@ It also works with certain AI announcement commands, but anyone can use it.
 You might not hear it, but it will still be heard.
 
 CHANNEL LETTER		FREQUENCY
-p (Public)		145.9
-s (Security)		135.9
-c (Command)		135.3
-n (Science)		135.5
-m (Medical)		135.3
-u (Supply)		134.7
-e (Engineering)		135.7
-v (Service)		134.9
-a (AI private)		144.7
-h (DS/Intercept)	144.1
-o (CMO)			148.5
-l (Confessional)	148.0*
-t (Interrogation)	142.4*
+-p (Public)		145.9
+-s (Security)		135.9
+-c (Command)		135.3
+-n (Science)		135.5
+-m (Medical)		135.3
+-u (Supply)		134.7
+-e (Engineering)	135.7
+-v (Service)		134.9
+-o (AI private)		144.7
+-h (DS/Intercept)	144.1
+-y (CMO)		148.5
+-l (Confessional)	148.0*
+-t (Interrogation)	142.4*
 
 *Requires adding the frequencies to Tcomms to recieve these channels.
 
