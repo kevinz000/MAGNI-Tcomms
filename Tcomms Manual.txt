@@ -1,7 +1,7 @@
 Welcome to the manual for the Tcomms script that is so big, it actually needs a manual!
 
-https://github.com/GunHog/MAGNI-Tcomms for the GITHUB!
-View http://pastebin.com/raw.php?i=LyFDdwAb for the source code. Check regularly for updates!
+https://github.com/GunHog/MAGNI-Tcomms for the GITHUB! Check regularly for updates!
+View http://pastebin.com/raw.php?i=LyFDdwAb for the source code. Possibly outdated, Github is a superior file manager!
 
 Author Note: Please do not abuse the -malf,-nuke, or other 'WE ARE ALL GOING TO DIE!' functions. Use them ONLY IF you are actually malf, and going to explode the station or know that Nuke Ops have set you up the bomb.
 I would like these announcements to be taken seriously by the crew!
@@ -17,6 +17,12 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.68
+Changes radio broadcaster back to single letter because -<letter> was too annoying.
+Removed script implde() because it is integrated into game now.
+Removed proper() as it was never used.
+The auto-capitalizer has been removed, as the game handles that now.
+
 1.67
 Department transmission script changed to require "-" before the letter. (This was broken when an update forced all speech to start with a capital letter)
 Added "ERT" translation to "Emergency Response Personnel" (HONK!)

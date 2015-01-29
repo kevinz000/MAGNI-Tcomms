@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.67"; /*
+$VERSION = "1.68"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -90,12 +90,6 @@ $content = substr($content,$start,$end);
 return $content;
 }
 
-def proper($In) {
-$Beg = upper(substr($In,1,2));
-$Rest = lower(substr($In,2));
-return $Beg+$Rest;
-}
-
 def toggle($key,$IfOn,$IfOff) {
 if(mem($key) == 1)
 	{
@@ -108,24 +102,6 @@ if(mem($key) == 1)
 		$content = $IfOn;
 	}
 	BC($content,$Pfq);
-}
-
-def implode($vector, $adder)
-{
-	$returnString = "";
-	$index = 1;
-	while($index <= length($vector))
-	{
-		$at = at($vector, $index);
-		$toAdd = $adder;
-		if($index == 1)
-		{
-			$toAdd = "";
-		}
-		$returnString = $returnString + $toAdd + $at;
-		$index += 1;
-	}
-	return $returnString;
 }
 
 def Elapsed() {
@@ -328,20 +304,20 @@ if(find($MuteVec,$OrigSource) || mem("MUTE_ALL") || ($OrigJob) == (mem($OrigJob)
 def SetChan()
 {
 $ChanSel = vector(
-"-p",$common,
-"-s",$security,
-"-c",$command,
-"-m",$medical,
-"-n",$science,
-"-e",$engineering,
-"-u",$supply,
-"-v",$service,
-"-o",1447,
-"-h",1441,
-"-y",1485,
-"-l",1480,
-"-t",1424,
-"-z",$sf+203,
+"*P",$common,
+"*S",$security,
+"*C",$command,
+"*M",$medical,
+"*N",$science,
+"*E",$engineering,
+"*U",$supply,
+"*V",$service,
+"*O",1447,
+"*H",1441,
+"*Y",1485,
+"*L",1480,
+"*T",1424,
+"*Z",$sf+203,
 );
 	$index = 1;
  	while($index <= length($ChanSel))
@@ -360,13 +336,13 @@ if(mem("ChannelSet") != 1)
 }
 
 //SELECTOR!
- $ExC = substr($content, 1,3);
-   if(find($ExC, mem($ExC)) && $CnLn == 2 && $OrigFreq == $Tfq) {
+$ExC = "*" + substr($content, 1,2);
+if(find($ExC, mem($ExC)) && $CnLn == 1 && $OrigFreq == $Tfq) {
 	Sub(3);
 	$MsgFreq = mem($ExC);
 	$exNum = 2;
 	if(!$IsAIorBorg){ BC($content, $MsgFreq, $source,$job); }
-	$freq = $MsgFreq;
+		$freq = $MsgFreq;
 }
 
 //CUSTOM
@@ -538,7 +514,6 @@ if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
 	if(find($content,"@ME")) { $content = replace($content,"@ME",$source); }
 	if(!find($pun,$End)) {$content = $content + ".";}
 	else {$content = $content+$End;}
-	if($Ex1 == lower($Ex1)) {$content = upper(substr($content,1,2)) + substr($content,2);}
 }
 
 //End
