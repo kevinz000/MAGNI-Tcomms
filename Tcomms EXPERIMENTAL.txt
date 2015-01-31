@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.68"; /*
+$VERSION = "1.68.1"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -437,6 +437,7 @@ def Initialize2()
 "SS13","Space Station Thirteen",
 "grav","Gravitational Generator",
 "ERT","Emergency Response Personnel",
+"lab","Laboratory",
 );
 	
 	$index = 1;
@@ -514,6 +515,7 @@ if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
 	if(find($content,"@ME")) { $content = replace($content,"@ME",$source); }
 	if(!find($pun,$End)) {$content = $content + ".";}
 	else {$content = $content+$End;}
+	if($Ex1 == lower($Ex1)) {$content = upper(substr($content,1,2)) + substr($content,2);}
 }
 
 //End
