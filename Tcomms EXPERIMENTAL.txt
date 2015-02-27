@@ -341,7 +341,7 @@ if(find($ExC, mem($ExC)) && $CnLn == 1 && $OrigFreq == $Tfq) {
 	Sub(3);
 	$MsgFreq = mem($ExC);
 	$exNum = 2;
-	if(!$IsAIorBorg){ BC($content, $MsgFreq, $source,$job); }
+	//if(!$IsAIorBorg){ BC($content, $MsgFreq, $source,$job); }
 		$freq = $MsgFreq;
 }
 
