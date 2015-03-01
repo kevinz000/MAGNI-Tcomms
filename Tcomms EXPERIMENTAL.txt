@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.68.1"; /*
+$VERSION = "1.68.2"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -22,6 +22,7 @@ $OrigContent = $content;
 $CnLim = 24;
 $Overlimit=0;
 $NonDept = 0;
+$memjob = "";
 $sf=1010;
 $NOSPAM = 2;
 $MsgFreq = 1459;
@@ -521,7 +522,7 @@ if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
 //End
 }
 
-if($Ex1 == "-superuser" && OrigFreq == Sfq && !$SULOCK) {
+if($Ex1 == "-superuser" && $OrigFreq == $Tfq && !$SULOCK) {
 Sub(12);
 if(!$Ex2) {mem($source+"*SU",$source);
 $content = "Superuser access granted.";

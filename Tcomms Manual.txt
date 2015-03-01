@@ -17,6 +17,9 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.68.2
+Fixes for minor issues.
+
 1.68.1
 Reverts the removal of the auto-capitalizer.
 adds "lab" to converter.
