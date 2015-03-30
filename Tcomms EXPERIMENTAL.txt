@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.68.2"; /*
+$VERSION = "1.70"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -19,6 +19,8 @@ $OrigJob = $job;
 $OrigFreq = $freq;
 $OrigSource = $source;
 $OrigContent = $content;
+$verb = $say;
+$spans = mem("filters");
 $CnLim = 24;
 $Overlimit=0;
 $NonDept = 0;
@@ -48,10 +50,15 @@ $SpecMute = mem("SpecMute");
 
 //Custom Broadcast
 
-def BC($Cn,$Fq,$Se,$Jb,$Si) {
+def BC($Cn,$Fq,$Se,$Jb,$Si,$filters,$Wsay,$Wask,$Wexclaim,$Wyell) {
 	if($Fq==$Pfq && !$Se) {$Se="T-Comms Module"; $Jb="SYS"; $Si="N";$NOSPAM=1;}
 	if($Si == "N" || $Si == "Y") { $Silence = $Si;}
-	if($Silence == "N") {broadcast($Cn,$Fq,$Se,$Jb);}
+	if(!$Wsay) {$Wsay = $say;}
+	if(!$Wask) {$Wask = $ask;}
+	if(!$Wexclaim) {$Wexclaim = $exclaim;}
+	if(!$Wyell) {$Wyell = $yell;}
+	
+	if($Silence == "N") {broadcast($Cn,$Fq,$Se,$Jb,$filters,$say,$ask,$exclaim,$yell);}
 }
 
 def IsAI() {
@@ -133,6 +140,24 @@ def CntDwn($T_Base) {
 	}
 }
 
+//Say Defs
+def SetAllVerbs($verb) {
+	$say = $verb;
+	$ask = $verb;
+	$exclaim = $verb;
+	$yell = $verb;
+}
+
+
+def ClownSay() {
+	$filters = vector($wacky);
+	$spans = $filters;
+	$say = "honks";
+	$ask = "squeaks";
+	$exclaim = "squeals";
+	$yell = "screams";
+}
+
 //End defs
 
 
@@ -186,7 +211,7 @@ Sub(8);
 }
 
 //UNIVERSAL TRANSLATOR
-	if($language != 1 && $language != 9) {
+	if($language != 1 && $language != 9 $$ language != 65535) {
 	BC("[TRANSLATED] " + $content, $Pfq, $source,$job);
 }
 
@@ -651,6 +676,22 @@ if($Ex1=="-mutemode") {
 	toggle("SpecMute","Standard Mute Active.","Special Mute Active.");
 }
 
+if($Ex1 == "-addclown") {
+	Sub(11);
+	$clowns = mem("Clowns");
+	if(!$clowns) {
+		$clowns = vector($content);
+	}
+	else {
+	push_back($clowns, $content);
+	}
+	mem("Clowns",$clowns);
+	BC("("+$content+") added to Clowns list! HONK!",$Pfq);
+	}
+if($Ex1 == "-delclowns") {
+	mem("Clowns",0);
+	BC("Clowns list cleared.",$Pfq);
+}
 //AI Automessages
 
 if (find($content, "has signed up as")){ 
@@ -664,18 +705,23 @@ if (find($content, "has signed up as")){
  else {$content = "Profession: " + $AI2 + " is now assigned to arriving crewmember: " + $AI1 + ", ID#:" + rand(11, 100);}
  $job = "NT-OS-"+$VERSION;
  $NoConv = 1;
+ $say = "chimes";
+ $spans = vector($loud, $robot);
 }
 
 
-//HIGLY ANNOYING AND SPAMMABLE PRE-RECORDED MESSAGES!
+//HIGHLY ANNOYING AND SPAMMABLE PRE-RECORDED MESSAGES!
 
-def AutoMsg($so,$jb,$fq) {
+def AutoMsg($so,$jb,$fq,$sa) {
 	if($fq) {$MsgFreq=$fq;}
 	else {$freq = $MsgFreq;}
 	if($jb) {$job = $jb;}
 	else {$job = "OS";}
 	if($so) {$source = $so;}
 	else {$source = $source + "_SYSOP";}
+	if($sa) {$say = $sa;}
+	else {$say = "announces";}
+	$spans = vector($loud, $robot);
 }
 
 //BINARY!
@@ -732,12 +778,12 @@ $content = "Message not set. Use '-setspam message/name/job' to set a message.";
 
  if($eChk == "-pain") {
 	$content = "System Notice: Damage to AI core has corrupted file [" + $OrigSource + ".exe]. Transfer to diagnostic computer for backup restoration and file repair recommended.";
-	AutoMsg($source + "_CORE_BIOS","BIOS");
+	AutoMsg($source + "_CORE_BIOS","BIOS","beeps");
 }
 
 if($eChk == "-bsod") {
 $content = "*BEEEEEEEEP*......" + $OrigSource + ".exe has encountered a problem, and needs to shut down. We apologize for the inconvenience."; 
-AutoMsg("NANOTRASEN_AI_OPERATING_SYSTEM","NT-OS");
+AutoMsg("NANOTRASEN_AI_OPERATING_SYSTEM","NT-OS","coldly states");
 }
 
 if($eChk == "-sysop") {
@@ -799,7 +845,7 @@ if($eChk == "-alert") {
 	$Text3 = at($Text,3);
 	if(!$Text3){$Text3 = "Appropriate";}
 $content = "ALERT: " + at($Text, 1) + " detected at: " + at($Text, 2) + " - " + $Text3 + " response advised.";
-AutoMsg();
+AutoMsg(,,,"alerts");
 }
 
 if($eChk == "-intruder") {
@@ -809,7 +855,7 @@ AutoMsg();
 
 if($eChk == "-core") {
 $content = "SYSTEM ALERT: Intruder detected in the AI chamber. Please intercept and remove intruder.";
-AutoMsg();
+AutoMsg(,,,"warns");
 }
 
 if($eChk == "-upload") {
@@ -962,6 +1008,8 @@ AutoMsg();
 if(mem($OrigSource + ":Malf") == $OrigSource) {
  $source = reverse($source) + Bin(5);
  $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999));
+ $verb = pick("garbles","stutters","distorts","malfunctions");
+ SetAllVerbs($verb);
 }
 
 if($eChk == "-laws") {
@@ -1078,6 +1126,16 @@ if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq 
 }
  elseif (!$source) { BC($finalContent, $Tfq, $source, $job); }
 
+//Say modders
+if(find($source,mem("Clowns")) || $job == "Clown") {
+	ClownSay();
+	}
+if($say == "hisses") {
+	$yell = "roars";
+}
+if(substr(reverse($content),1,2) == "~") {
+	$say = "whimsies";
+}
 //JOB ADDER
 
 def Initialize() {
@@ -1092,7 +1150,6 @@ def Initialize() {
 "Cargo Technician", "Supply Tech",
 "Shaft Miner", "Miner",
 "Clown", "HONK!",
-"Mime", "Mime",
 "Janitor", "Jani",
 "Librarian", "Lib",
 "Lawyer", "Law",
@@ -1179,7 +1236,7 @@ $eP2 = substr($Ex2,1,2);
 if($eS != "-" && $IsAIorBorg && $OrigFreq == $Tfq && $NOSPAM != 1) 
 {
 	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=1;}
-	BC($content, $MsgFreq, $source, $job,"N"); 
+	BC($content, $MsgFreq, $source, $job,"N",$spans); 
 	if ($MsgFreq == $common) {$freq = 1; }
 
 	elseif($MsgFreq==mem("AI_FREQ")){
