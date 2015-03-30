@@ -1,7 +1,6 @@
 Welcome to the manual for the Tcomms script that is so big, it actually needs a manual!
 
 https://github.com/GunHog/MAGNI-Tcomms for the GITHUB! Check regularly for updates!
-View http://pastebin.com/raw.php?i=LyFDdwAb for the source code. Possibly outdated, Github is a superior file manager!
 
 Author Note: Please do not abuse the -malf,-nuke, or other 'WE ARE ALL GOING TO DIE!' functions. Use them ONLY IF you are actually malf, and going to explode the station or know that Nuke Ops have set you up the bomb.
 I would like these announcements to be taken seriously by the crew!
@@ -17,6 +16,17 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.70
+Updates the script to the latest NTSL expansion.
+The AI's synthetic voice is now filtered out to match the normal crew voices. (Except automatic ones)
+The BC() function now accepts voice filters and all four verbs.
+Most of the pre-recorded AI messages now have "announces" as their verb, and uses a loud synthetic voice.
+"-malf" function is now slightly more annoying.
+Radio messages ending in "~" will now have "whimsies" as their verb!
+Clowns now have the wacky voice by default, as well as their own annoying verb set! HONK!
+Added "-addclown <name>" function! Any name set using this will have the Clown voice set applied! HONK HONK!!
+Hacky fix to prevent the universal translator activating on pAIs.
+
 1.68.2
 Fixes for minor issues.
 
