@@ -16,6 +16,9 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.70.1
+Fixes the clown checker turning EVERYONE into clowns! HONK!
+
 1.70
 Updates the script to the latest NTSL expansion.
 The AI's synthetic voice is now filtered out to match the normal crew voices. (Except automatic ones)

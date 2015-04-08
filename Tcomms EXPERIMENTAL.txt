@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.70"; /*
+$VERSION = "1.70.1"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -1127,7 +1127,7 @@ if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq 
  elseif (!$source) { BC($finalContent, $Tfq, $source, $job); }
 
 //Say modders
-if(find($source,mem("Clowns")) || $job == "Clown") {
+if(find(mem("Clowns"), $source) || $job == "Clown") {
 	ClownSay();
 	}
 if($say == "hisses") {
