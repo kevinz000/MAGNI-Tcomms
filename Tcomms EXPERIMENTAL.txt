@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.70.1"; /*
+$VERSION = "1.71"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -177,7 +177,6 @@ if($Ex1 == "-sig") {
 if($Ex1 == "-sigdef") { 
 signal (1457, 30);
 BC("1457, 30",$Pfq, "Signaller (" + $source + ")", $job,"N");
-$pass = 0;
 }
 
 
@@ -263,7 +262,7 @@ def Mute() {
 		$content = "*beep*";
 		$job = "";
 		$source = "";
-		$freq = 1;
+		$freq = 0;
 		$Silence = "Y";
 	}
 	else
@@ -464,6 +463,7 @@ def Initialize2()
 "grav","Gravitational Generator",
 "ERT","Emergency Response Personnel",
 "lab","Laboratory",
+"exp","E.X.P.E.R.I-MENTOR",
 );
 	
 	$index = 1;
@@ -489,9 +489,10 @@ def Convert() {
 
 $End = substr(reverse($content),1,2);
 $ConLn = length($content);
-if(find($pun,$End)) {$content= substr($content,1,$ConLn);}
+$msgholder = $content;
+if(find($pun,$End)) {$msgholder = substr($msgholder,1,$ConLn);}
 
-$newContent = explode($content, " ");
+$newContent = explode($msgholder, " ");
 if(length($newContent) > $CnLim) {$Overlimit=1;}
 $index = 1;
 while($index <= length($newContent) && !$Overlimit)
@@ -691,6 +692,13 @@ if($Ex1 == "-addclown") {
 if($Ex1 == "-delclowns") {
 	mem("Clowns",0);
 	BC("Clowns list cleared.",$Pfq);
+}
+
+if($Ex1 == "-robot") {
+	toggle("AIVOICE","Human voice filter deactivated.","Human voice filter enabled.");
+}
+if(mem("AIVOICE") == 1) {
+	$spans = vector($robot);
 }
 //AI Automessages
 
@@ -1092,7 +1100,7 @@ $channelName = vector(
 	"[Supply]",
 	"[Service]",
 	"[Medbay]",
-	"[Deathsquad]",
+	"[Private]",
 	"[AI Priv]",
 	"[Confessional]",
 	"[Interrogation]",
@@ -1132,6 +1140,7 @@ if(find(mem("Clowns"), $source) || $job == "Clown") {
 	}
 if($say == "hisses") {
 	$yell = "roars";
+	$exclaim = "screeches";
 }
 if(substr(reverse($content),1,2) == "~") {
 	$say = "whimsies";
@@ -1233,18 +1242,18 @@ $eP1 = substr($Ex1,1,2);
 $eP2 = substr($Ex2,1,2);
 
 
-if($eS != "-" && $IsAIorBorg && $OrigFreq == $Tfq && $NOSPAM != 1) 
+if($eS != "-" && $IsAIorBorg && $NOSPAM != 1) 
 {
-	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=1;}
+	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=0;}
 	BC($content, $MsgFreq, $source, $job,"N",$spans); 
-	if ($MsgFreq == $common) {$freq = 1; }
+	if ($MsgFreq == $common) {$freq = 0; }
 
 	elseif($MsgFreq==mem("AI_FREQ")){
 		$content="("+$MsgFreq+") "+$content;
 	}
 }
 
-elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2)) { $freq=1;}
+elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2)) { $freq=0;}
 
 //Perhaps the most Frankensteined Tcomms script you will ever see.
 //Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu

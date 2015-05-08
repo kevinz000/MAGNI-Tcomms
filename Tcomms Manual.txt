@@ -16,6 +16,15 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.71
+Silicons will now always have a normal voice unless they enable the robotic filter.
+Added new toggle for robotic voice, "-robot".
+Adjusted mute method slightly. Ghosts still hear it (unfixable)
+"Deathsquad" channel now named "Private", as the Centcom frequency is now 1337.
+Lizards now screech when exclaiming.
+"exp" now converts to "E.X.P.E.R.I-MENTOR".
+Fixed puncutation loss if the word converter is disabled.
+
 1.70.1
 Fixes the clown checker turning EVERYONE into clowns! HONK!
 
@@ -256,6 +265,7 @@ Gave -nuke annoucement a proper name and job.
 -rename me <Name>
 -rename Old/New/New Job
 -namelist
+-robot
 TOGGLE_AUTO
 HEAR_MUTE
 
@@ -475,8 +485,11 @@ Changes the radio name and job of the person you desire. Slash is used as a sepe
 -namelist
 If you renamed anyone, you can check who using this command.
 
+-robot
+A general toggle which determines if silicons speak with a human or robotic voice. Off by default.
+
 TOGGLE_AUTO
-Allows the word converter to be disabled or re-enabled. Useful for anyone who does wish to use it.
+Allows the word converter to be disabled or re-enabled. Useful for anyone who does not wish to use it.
 
 HEAR_MUTE
 Allows you to hear the screams of your victims on the PRIVATE channel. The target will not know you can hear them.
