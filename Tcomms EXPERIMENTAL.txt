@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.71"; /*
+$VERSION = "1.72"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -27,7 +27,7 @@ $NonDept = 0;
 $memjob = "";
 $sf=1010;
 $NOSPAM = 2;
-$MsgFreq = 1459;
+$MsgFreq = $common;
 if(mem("AI_FREQ")){$MsgFreq=mem("AI_FREQ");}
 $Time = time();
 $NoBorg = mem("BORG_OFF");
@@ -1227,7 +1227,10 @@ if (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && !$JobMo
 }
 elseif (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && $JobMode)
 {
-	$content = $Open_B + $foo + $Close_B + $content; 
+	$say = $Open_B + $foo + $Close_B +" "+ $say;
+	$ask = $Open_B + $foo + $Close_B +" "+ $ask;
+	$exclaim = $Open_B + $foo + $Close_B +" "+ $exclaim;
+	$yell = $Open_B + $foo + $Close_B +" "+ $yell;
 }
 
 if($timeon && !$IsAI && $freq == 1459) {$job = timestamp(HH:mm:ss);}
@@ -1241,10 +1244,14 @@ $eS = substr($content,1,2);
 $eP1 = substr($Ex1,1,2);
 $eP2 = substr($Ex2,1,2);
 
+if($OrigFreq == 1357 && $MsgFreq == $common) {
+$NOSPAM = 1;
+$freq = 0;}
 
 if($eS != "-" && $IsAIorBorg && $NOSPAM != 1) 
 {
 	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=0;}
+
 	BC($content, $MsgFreq, $source, $job,"N",$spans); 
 	if ($MsgFreq == $common) {$freq = 0; }
 
@@ -1254,6 +1261,5 @@ if($eS != "-" && $IsAIorBorg && $NOSPAM != 1)
 }
 
 elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2)) { $freq=0;}
-
 //Perhaps the most Frankensteined Tcomms script you will ever see.
 //Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu

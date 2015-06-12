@@ -16,6 +16,12 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.72
+Terrible workaround for the Engineering channel issues on Boxstation.
+Using -jobmode to not include jobs in the speaker's name now changes the saymods instead of the message content.
+This means that AI tracking links are not broken by script.
+
+
 1.71
 Silicons will now always have a normal voice unless they enable the robotic filter.
 Added new toggle for robotic voice, "-robot".
