@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.72"; /*
+$VERSION = "1.73"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -210,7 +210,7 @@ Sub(8);
 }
 
 //UNIVERSAL TRANSLATOR
-	if($language != 1 && $language != 9 && language != 65535) {
+	if($language != 1 && $language != 9 && $OrigJob != "pAI") {
 	BC("[TRANSLATED] " + $content, $Pfq, $source,$job);
 }
 
@@ -442,7 +442,6 @@ def Initialize2()
 "MMI", "Man-Machine Interface",
 "Singulo", "Gravitational Singularity",
 "Blob", "Level-5 Biohazard",
-"Bar", "Maltese Falcon",
 "Disk", "Nuclear Authentication Disk",
 "RCD","Rapid Construction Device",
 "RPED","Rapid Part Exchange Device",
@@ -1221,11 +1220,11 @@ if($Ajob) {$foo = "Act-"+$foo;}
 
 Set_Bracket();
 
-if (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && !$JobMode && !find($source, " (as ")) 
+if (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && $JobMode && !find($source, " (as ")) 
 {
 	$source = $source + $Open_B +$foo + $Close_B;
 }
-elseif (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && $JobMode)
+elseif (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && !$JobMode)
 {
 	$say = $Open_B + $foo + $Close_B +" "+ $say;
 	$ask = $Open_B + $foo + $Close_B +" "+ $ask;
@@ -1244,7 +1243,7 @@ $eS = substr($content,1,2);
 $eP1 = substr($Ex1,1,2);
 $eP2 = substr($Ex2,1,2);
 
-if($OrigFreq == 1357 && $MsgFreq == $common) {
+if($OrigFreq == 1357 && $MsgFreq == $common && $IsAI) {
 $NOSPAM = 1;
 $freq = 0;}
 
@@ -1260,6 +1259,6 @@ if($eS != "-" && $IsAIorBorg && $NOSPAM != 1)
 	}
 }
 
-elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2)) { $freq=0;}
+elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2) && $OrigFreq != 1357) { $freq=0;}
 //Perhaps the most Frankensteined Tcomms script you will ever see.
 //Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu

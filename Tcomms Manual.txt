@@ -16,6 +16,12 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.73
+pAIs no longer trigger universal translator.
+"Bar" has been removed, as the signs can be changed now.
+The addition of jobs to the saymod is now default. Use -jobmode to add job tags to the source again.
+Fixed the script breaking the Engineering channel.
+
 1.72
 Terrible workaround for the Engineering channel issues on Boxstation.
 Using -jobmode to not include jobs in the speaker's name now changes the saymods instead of the message content.
