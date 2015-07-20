@@ -230,19 +230,19 @@ Gave -nuke annoucement a proper name and job.
  **You MUST use TALK channel to transmit to other channels**
 
  ~RADIO LIST: 
--p (Public)
--s (Security)
--c (Command)
--n (Science)
--m (Medical)
--u (Supply)
--e (Engineering)
--v (Service)
--o (AI private)
--h (Deathsquad)
--y (CMO's medbay listening channel)
--l (Confessional)
--t (Interrogation)
+p (Public)
+s (Security)
+c (Command)
+n (Science)
+m (Medical)
+u (Supply)
+e (Engineering)
+v (Service)
+o (AI private)
+h (Talk channel)
+y (CMO's medbay listening channel)
+l (Confessional)
+t (Interrogation)
 -cust <freq> - Usage: "-cust <FREQUENCY> <MESSAGE>" Example: "-cust 1447 AI, DOOR!"
 
 ~Command List key: All commands start with "-", because "/" causes unwanted removals of the "say" verb.
@@ -368,19 +368,19 @@ It also works with certain AI announcement commands, but anyone can use it.
 You might not hear it, but it will still be heard.
 
 CHANNEL LETTER		FREQUENCY
--p (Public)		145.9
--s (Security)		135.9
--c (Command)		135.3
--n (Science)		135.5
--m (Medical)		135.3
--u (Supply)		134.7
--e (Engineering)	135.7
--v (Service)		134.9
--o (AI private)		144.7
--h (DS/Intercept)	144.1
--y (CMO)		148.5
--l (Confessional)	148.0*
--t (Interrogation)	142.4*
+p (Public)		145.9
+s (Security)		135.9
+c (Command)		135.3
+n (Science)		135.5
+m (Medical)		135.3
+u (Supply)		134.7
+e (Engineering)	135.7
+v (Service)		134.9
+o (AI private)		144.7
+h (DS/Intercept)	144.1
+y (CMO)		148.5
+l (Confessional)	148.0*
+t (Interrogation)	142.4*
 
 *Requires adding the frequencies to Tcomms to recieve these channels.
 
