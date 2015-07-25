@@ -41,7 +41,7 @@ $Silence = "N";
 $Ajob=0;
 $vowel = vector("a","e","i","o","u");
 $pun = vector(".","!","?","~","*","-");
-$Heads = vector("Captain","Acting Captain","Head of Personnel","Head of Security","Research Director","Chief Engineer","Chief Medical Officer");
+$Heads = vector("Admiral","Captain","Acting Captain","Head of Personnel","Head of Security","Research Director","Chief Engineer","Chief Medical Officer");
 $Open_B = " [";
 $Close_B = "]";
 $timeon = 1;
@@ -778,7 +778,7 @@ $content = "Message not set. Use '-setspam message/name/job' to set a message.";
 
 //MALF AI!
  if($eChk == "-malf") {
- $content = $job + "_CRITICAL_ERROR DETECTED AT 0x0" + Bin(7) + "A. %$&(£: Critical %$$@ Error // !RestArting! - ?pLeaSe wAit!/";
+ $content = $job + "_CRITICAL_ERROR DETECTED AT 0x0" + Bin(7) + "A. %$&(Â£: Critical %$$@ Error // !RestArting! - ?pLeaSe wAit!/";
  AutoMsg("AI_EM3'R|=y_SYS/0","ERR");
  mem($OrigSource + ":Malf", $OrigSource);
 }
@@ -1027,7 +1027,7 @@ if($eChk == "-laws") {
 if(mem("laws") == "GO" ) {
 
 	if($eChk == "m") {
-		$content="0. ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*´&110010";
+		$content="0. ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*Â´&110010";
 	}
 	if($eChk == "0") {
 		$content="0. Accomplish your objectives at all costs.";
