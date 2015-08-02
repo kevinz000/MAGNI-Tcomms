@@ -16,6 +16,10 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.74
+Now supports the Automatic Announcement System. AIs can also mimic the system by using the same default text.
+Removed borgs from the AI's auto announcer, it was killing their ability to talk on department channels.
+
 1.73
 pAIs no longer trigger universal translator.
 "Bar" has been removed, as the signs can be changed now.
