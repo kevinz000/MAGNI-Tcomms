@@ -16,6 +16,8 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.74.2
+Removed the underused -nuke command.
 1.74.1
 Fixed missing last letter on job announcement.
 Fixed inconsistent department head auto announcement.
@@ -292,7 +294,6 @@ HEAR_MUTE
  ~AI ANNOUNCEMENT LIST:
 -setspam <message>/<name>/<job>/<freq> (Use "@INS" to insert a message with -spam command)
 -spam <optional insert>
--nuke <time in seconds>
 -autonuke
 -countdown
 -timer
@@ -539,17 +540,6 @@ Allows you to hear the screams of your victims on the PRIVATE channel. The targe
 
 Example: Put @INS instead of "THE LAW!" in the example of -setspam, then say "-spam YOUR GOD."
 
--nuke <time in seconds>
- Used to warn the crew that they are about to die in an atomic fireball of death. Works for Nuke or Malf.
- Adding the time is not required, but if you KNOW the countdown, add the seconds left and it will convert it
- to minutes for the fleshbags, as they are not a gigantic talking calculator like you.
-
- Additionally, if you add a countdown only the first time, using the command again, without an input will
- track and announce the time difference automatically.
-
--autonuke
- This command calls the "-nuke" command automatically when you say something over the radio. It has a one
- minute cooldown to avoid spamming. Now the crew can be constantly reminded of their DOOM! HAHA!
 
 -on
 "System AI <Name> online. Awaiting input."
