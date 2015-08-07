@@ -1049,8 +1049,9 @@ if($OrigJob == "Machine" || "AI")
   $source = "NTSS13_Docking_Control"; 
   $AIexp = explode ($content, " has signed up as ");
   $AI1 = at($AIexp,1);
-  $AI2 = substr(at($AIexp,2),1,length(at($AIexp,2)));
+  $AI2 = at($AIexp,2);
   if($AI2 =="Assistant") {$content = "Arriving crewmember: "+$AI1+" is joining as Assistant, ID#:" + rand(101, 1000);}
+  elseif(find($Heads,$AI2)) {$content = "The "+$AI2+", "+$AI1+", has joined the Command Staff, ID#:" + find($Heads,$AI2);}
   else {$content = "Profession: " + $AI2 + " is now assigned to arriving crewmember: " + $AI1 + ", ID#:" + rand(11, 100);}
   $job = "NT-OS-"+$VERSION;
   $NoConv = 1;
