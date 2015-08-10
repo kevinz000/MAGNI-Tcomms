@@ -16,8 +16,16 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.74.3
+Fixes superuser not working.
+Fixes some unique automessages.
+Fixed the timestamp for AI's job indicator.
+Simplified the AI/Borg broadcaster, and fixed it so that built in radios work for borgs and AI.
+Malf command is now more MALFY!
+
 1.74.2
 Removed the underused -nuke command.
+
 1.74.1
 Fixed missing last letter on job announcement.
 Fixed inconsistent department head auto announcement.

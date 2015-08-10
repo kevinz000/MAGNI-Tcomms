@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.74.2"; /*
+$VERSION = "1.74.3"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -20,7 +20,7 @@ $OrigFreq = $freq;
 $OrigSource = $source;
 $OrigContent = $content;
 $verb = $say;
-$spans = mem("filters");
+$spans = vector();
 $CnLim = 24;
 $Overlimit=0;
 $NonDept = 0;
@@ -62,7 +62,7 @@ def BC($Cn,$Fq,$Se,$Jb,$Si,$filters,$Wsay,$Wask,$Wexclaim,$Wyell) {
 }
 
 def IsAI() {
-	if($OrigJob == "AI") {return 1;}
+	if($OrigJob == "AI" || ($SU && !$SULOCK)) {return 1;}
 	else {return 0;}
 }
 $IsAI = IsAI();
@@ -619,6 +619,7 @@ if($Ex1 == "-freq"){
 	$freq=tonum($Ex2);
 	mem("AI_FREQ",$freq);
 	BC("Frequency set to "+$freq,$Pfq);
+	$NOSPAM = 1;
 }
 
 if($Ex1 == "-intercept") {
@@ -770,12 +771,12 @@ $content = "Message not set. Use '-setspam message/name/job' to set a message.";
 
  if($eChk == "-pain") {
 	$content = "System Notice: Damage to AI core has corrupted file [" + $OrigSource + ".exe]. Transfer to diagnostic computer for backup restoration and file repair recommended.";
-	AutoMsg($source + "_CORE_BIOS","BIOS","beeps");
+	AutoMsg($source + "_CORE_BIOS","BIOS",,"beeps");
 }
 
 if($eChk == "-bsod") {
 $content = "*BEEEEEEEEP*......" + $OrigSource + ".exe has encountered a problem, and needs to shut down. We apologize for the inconvenience."; 
-AutoMsg("NANOTRASEN_AI_OPERATING_SYSTEM","NT-OS","coldly states");
+AutoMsg("NANOTRASEN_AI_OPERATING_SYSTEM","NT-OS",,"coldly states");
 }
 
 if($eChk == "-sysop") {
@@ -961,9 +962,14 @@ AutoMsg();
 //MALF
 if(mem($OrigSource + ":Malf") == $OrigSource) {
  $source = reverse($source) + Bin(5);
- $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999));
- $verb = pick("garbles","stutters","distorts","malfunctions");
+ $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999),pick($Heads));
+ $verb = pick("garbles","stutters","distorts","malfunctions","crackles");
  SetAllVerbs($verb);
+ $spans = vector(pick($robot,$wacky,$emphasis));
+ if(prob(33))
+ {
+	$spans += vector($loud);
+ }
 }
 
 if($eChk == "-laws") {
@@ -1210,7 +1216,7 @@ elseif (!find($source, "Unknown") && $job != "No id" && $job != "Unknown" && !$J
 	$yell = $Open_B + $foo + $Close_B +" "+ $yell;
 }
 
-if($timeon && !$IsAI && $freq == 1459) {$job = timestamp(HH:mm:ss);}
+if($timeon && !$IsAI && $freq == 1459) {$job = timestamp(H);}
 if(find($source, " (as ")) {
 	$exName = explode($source, " (as ");
 	$job = "ID MISMATCH: " + at($exName,1);
@@ -1221,20 +1227,10 @@ $eS = substr($content,1,2);
 $eP1 = substr($Ex1,1,2);
 $eP2 = substr($Ex2,1,2);
 
-if($OrigFreq == 1357 && $MsgFreq == $common && $IsAI) {
-$NOSPAM = 1;
-$freq = 0;}
-
-if($eS != "-" && $IsAI && $NOSPAM != 1) 
+if($eS != "-" && $IsAIorBorg && $NOSPAM != 1 && ($OrigFreq == $Tfq || $OrigFreq == $Pfq))
 {
-	if ($MsgFreq==$Tfq || $MsgFreq==$Pfq) {$freq=0;}
-
-	BC($content, $MsgFreq, $source, $job,"N",$spans); 
-	if ($MsgFreq == $common) {$freq = 0; }
-
-	elseif($MsgFreq==mem("AI_FREQ")){
-		$content="("+$MsgFreq+") "+$content;
-	}
+	$freq = $MsgFreq;
+	$filters = $spans;
 }
 
 elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2) && $OrigFreq != 1357) { $freq=0;}
