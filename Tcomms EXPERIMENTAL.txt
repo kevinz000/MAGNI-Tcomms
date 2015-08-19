@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.74.3"; /*
+$VERSION = "1.74.4"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -13,7 +13,6 @@ $explodeString = explode($content, " "); //Required for commands.
 $Ex1 = lower(at($explodeString, 1));
 $Ex2 = at($explodeString, 2);
 $Ex3 = at($explodeString, 3);
-
 $CnLn = length(at($explodeString,1));
 $OrigJob = $job;
 $OrigFreq = $freq;
@@ -164,19 +163,20 @@ def ClownSay() {
 //REMOTE SIGNALLER
 
 if($Ex1 == "-sig") { 
-	$pass = 0;
+	$freq = 0;
 	$sigfreq = tonum($Ex2);
  	$sigcode = tonum($Ex3); 
 	signal($sigfreq, $sigcode); 
 
-	BC($Ex2 + ", " +  $Ex3,$Pfq, "Signaller (" + $source + ")", $job,"N");
+	BC("Frequency: "+$Ex2 + ", Code: " +$Ex3,$Pfq, "Signaller (" + $source + ")", $job,"N");
 
 }
 
 //DEFAULT REMOTE SIGNALLER
 if($Ex1 == "-sigdef") { 
 signal (1457, 30);
-BC("1457, 30",$Pfq, "Signaller (" + $source + ")", $job,"N");
+BC("Frequency: 1457, Code: 30",$Pfq, "Signaller (" + $source + ")", $job,"N");
+freq = 0;
 }
 
 
@@ -219,25 +219,21 @@ Sub(8);
 
 if(mem("Mute_INIT")!= 1) {
 	$MuteVec = vector ();
-	$MuteId = 1; 
-	mem("MuteId", $MuteId); 
 	mem("MuteVec",$MuteVec); 
 	mem("Mute_INIT", 1); 
 }
 
 
 $MuteVec = mem("MuteVec"); 
-$MuteId = mem("MuteId");
 $nl=$sf+203;
 
 if($Ex1 == "-mute") {
-
-	$target = substr($content, 7);
-	push_back($MuteVec, $target); 
-	BC($MuteId + " " + $target, $Pfq, "ADDED TO MUTELIST");
-	$MuteId += 1;
-	mem("MuteId", $MuteId); 
+	$target = upper(Sub(7));
+	$MuteVec |= $target;
+	$MListLen = length($MuteVec);
+	BC($target +" - "+$MListLen, $Pfq, "ADDED TO MUTELIST");
 	mem("MuteVec", $MuteVec);
+	$NOSPAM = 1;
 }
 
 if($Ex1 == "-muteall" && $IsAIorBorg) { 
@@ -276,17 +272,26 @@ def Mute() {
 //UNMUTER
 if($Ex1 == "-unmute") {
 	$MuteVec = mem("MuteVec");
-	$target = substr($content, 9);
-	remove($MuteVec, $target);
-	mem("MuteVec", $MuteVec);
-	BC($target + " unmuted.",$Pfq);
+	$target = upper(Sub(9));
+	$feedback = "";
+	if(find($MuteVec, $target))
+	{
+		remove($MuteVec, $target);
+		mem("MuteVec", $MuteVec);
+		$feedback = $target + " unmuted.";
+	}
+	else
+	{
+		$feedback = $target + " not in mute list.";
+	}
+	BC($feedback,$Pfq);
 	if(!$IsAIorBorg) {$pass=0;}
 }
 
 //Lists muted targets.
 if($Ex1 == "-mutelist") {
 	$index = 1;
-	while($index < $MuteId) {
+	while($index <= length($MuteVec)) {
 		$ListReturn = at($MuteVec, $index);
 		BC( $ListReturn + " - " + $index, $Pfq);
 		$index += 1;
@@ -316,7 +321,7 @@ if(!$IsAIorBorg) {$pass=0;}
 }
 
 //MUTE HAPPENS HERE
-if(find($MuteVec,$OrigSource) || mem("MUTE_ALL") || ($OrigJob) == (mem($OrigJob) + "*M*")) { 
+if(find($MuteVec,upper($OrigSource)) || mem("MUTE_ALL") || ($OrigJob) == (mem($OrigJob) + "*M*")) { 
 	Mute();
 }
 
@@ -575,9 +580,8 @@ if(mem("NAME_INIT")!= 1) {
 
 if($Ex1 == "-rename") {
 $NameVec = mem("NameVec");
-$NameId = mem("NameId");  
 	
-	$ExplodeName = substr($content, 9);
+	$ExplodeName = Sub(9);
 	$ExplodeName = explode($ExplodeName, "/"); 
 	$OldName = at($ExplodeName , 1);
 	if(!$OldName || $OldName=="me") {$OldName=$OrigSource;}
@@ -586,9 +590,7 @@ $NameId = mem("NameId");
 	$NewName = at($ExplodeName , 2) + $NewJob;
 	mem($OldName+"*N*", $NewName);
 	$NameSave = $OldName + " is renamed: " + $NewName;
-	insert($NameVec, $NameId, $NameSave);
-	$NameId += 1;
-	mem("NameId", $NameId); 
+	$NameVec |= $NameSave;
 	mem("NameVec", $NameVec);
 	BC($NameSave,$Pfq);
 
@@ -598,11 +600,10 @@ Rename(); //Function call
 // Converted name viewer
 if($Ex1 == "-namelist") {
 	$NameVec = mem("NameVec"); 
-	$NameId = mem("NameId");
 	$index = 1;
-	while($index <= $NameId) {
+	while($index <= length($NameVec)) {
 		$ListReturn = at($NameVec, $index);
-		BC( $ListReturn + "- " + $index, $Pfq, "Name Lister");
+		BC( $ListReturn + " - " + $index, $Pfq, "Name Lister");
 		$index += 1;
 	}	
 		
@@ -684,7 +685,7 @@ if($Ex1 == "-addclown") {
 		$clowns = vector($content);
 	}
 	else {
-	push_back($clowns, $content);
+		$clowns |= $content;
 	}
 	mem("Clowns",$clowns);
 	BC("("+$content+") added to Clowns list! HONK!",$Pfq);

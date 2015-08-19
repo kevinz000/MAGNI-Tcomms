@@ -16,6 +16,10 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.74.4
+Signaller feedback made nicer.
+Bugfixes
+
 1.74.3
 Fixes superuser not working.
 Fixes some unique automessages.
