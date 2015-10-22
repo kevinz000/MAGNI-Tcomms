@@ -146,8 +146,6 @@ def SetAllVerbs($verb) {
 	$exclaim = $verb;
 	$yell = $verb;
 }
-
-
 def ClownSay() {
 	$filters = vector($wacky);
 	$spans = $filters;
@@ -156,7 +154,6 @@ def ClownSay() {
 	$exclaim = "squeals";
 	$yell = "screams";
 }
-
 def SkeleSay() {  //them rattles
 	$filters = vector($papyrus);
 	$spans = $filters;
@@ -166,18 +163,7 @@ def SkeleSay() {  //them rattles
 	$yell = "rattles";
 }
 
-def ClwneSay() {  
-	$filters = vectory($clwne);
-	$spans = $filters;
-	$say = "HONKS";
-	$ask = "HONKS";
-	$exclaim = "HONKS";
-	$yell = "HONKS'";
-}
-
-
 //End defs
-
 
 //REMOTE SIGNALLER
 
@@ -198,7 +184,6 @@ BC("Frequency: 1457, Code: 30",$Pfq, "Signaller (" + $source + ")", $job,"N");
 freq = 0;
 }
 
-
 //For ANONYMOUS transmission.
 def Anon($L){
 	Sub($L);
@@ -208,7 +193,6 @@ def Anon($L){
 }
 
 if($Ex1 ==  "-anon") {	Anon(7); }
-
 
 if($Ex1 == "-voice") {
 $NameVec = mem("NameVec");
@@ -233,7 +217,6 @@ Sub(8);
 	BC("[TRANSLATED] " + $content, $Pfq, $source,$job);
 }
 
-
 //Mute Script!
 
 if(mem("Mute_INIT")!= 1) {
@@ -241,7 +224,6 @@ if(mem("Mute_INIT")!= 1) {
 	mem("MuteVec",$MuteVec); 
 	mem("Mute_INIT", 1); 
 }
-
 
 $MuteVec = mem("MuteVec"); 
 $nl=$sf+203;
@@ -287,7 +269,6 @@ def Mute() {
 }
 
 //End
-
 //UNMUTER
 if($Ex1 == "-unmute") {
 	$MuteVec = mem("MuteVec");
@@ -330,7 +311,6 @@ BC($d, $Pfq);
 if(!$IsAIorBorg) {$pass=0;}
 }
 
-
 if($Ex1 == "-unmutejob") {
 $tarjob = substr($content, 12);
 $g = "Unmuted Job:"+ mem($tarjob);
@@ -345,10 +325,7 @@ if(find($MuteVec,upper($OrigSource)) || mem("MUTE_ALL") || ($OrigJob) == (mem($O
 }
 
 //END MUTE
-
-
 //Department transmission
-
 
 def SetChan()
 {
@@ -419,7 +396,6 @@ def Rename () {
 }
 
 Rename();
-
 
 // Silicon Verbosity increaser!
 def Initialize2()
@@ -501,7 +477,6 @@ def Initialize2()
 	
 } 
 
-
 if(mem("initialized2") != 1)
 { 
 	Initialize2();
@@ -544,20 +519,17 @@ while($index <= length($newContent) && !$Overlimit)
 	$index += 1;
 }
 
-
 $passphrase = "TOGGLE_AUTO";
 if(find($content, $passphrase))
 { 
 toggle($passphrase,"Converter Enabled","Converter Disabled");
 }
 
-
 if(mem("CONV_INI") != "SET") { 
 mem($passphrase, 1);
 mem("CONV_INI","SET");
 }
  $eS2 = substr($content,1,2);
-
 
 if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
 {
@@ -567,7 +539,6 @@ if(mem($passphrase) == 1 && $eS2 != "-" && !$NoConv)
 	else {$content = $content+$End;}
 	if($Ex1 == lower($Ex1)) {$content = upper(substr($content,1,2)) + substr($content,2);}
 }
-
 //End
 }
 
@@ -588,7 +559,6 @@ else{MsgFreq = $Pfq;}
 if($IsAIorBorg) {
 
 //Name changer!
-
 if(mem("NAME_INIT")!= 1) {
 	$NameVec = vector ();
 	$NameId = 1;
@@ -632,8 +602,6 @@ if($Ex1 == "-namelist") {
 if($Ex1 == "-convertcrew") {
 	toggle("TROLL_CREW","Converted Extended to crew.","Converter reset.");
 }
-
-
 
 if($Ex1 == "-freq"){
 	$freq=tonum($Ex2);
@@ -715,7 +683,7 @@ if($Ex1 == "-delclowns") {
 }
 
 if($Ex1 == "-addskeleton") { //muh spooky
-	Sub(11);
+	Sub(14);
 	$skeletons = mem("Skeleton");
 	if(!$skeletons) {
 		$skeletons = vector($content);
@@ -723,30 +691,12 @@ if($Ex1 == "-addskeleton") { //muh spooky
 	else {
 		$skeletons |= $content;
 	}
-	mem("Skeltons",$skeletons);
+	mem("Skeletons",$skeletons);
 	BC("("+$content+") added to Skeletons list! SPOOKY!",$Pfq);
 	}
 if($Ex1 == "-delskeletons") {
 	mem("Skeletons",0);
 	BC("Skeletons list cleared.",$Pfq);
-}
-
-
-if($Ex1 == "-addclwne") {
-	Sub(11);
-	$clwnes = mem("Clwnes");
-	if(!$clwnes) {
-		$clwnes = vector($content);
-	}
-	else {
-		$clwnes |= $content;
-	}
-	mem("Clwnes",$clwnes);
-	BC("("+$content+") added to Clwnes list! AUTISM!",$Pfq);
-	}
-if($Ex1 == "-delclwnes") {
-	mem("Clwnes",0);
-	BC("Clwnes list cleared.",$Pfq);
 }
 
 if($Ex1 == "-robot") {
@@ -780,7 +730,6 @@ def Bin($c) {
 
 $eChk = lower(at($explodeString, $exNum));
 
-
 if($eChk == "-time") {
 $content = "The current time is: "+timestamp(H)+", NT Standard Time";
 AutoMsg();
@@ -793,7 +742,6 @@ if($eChk == "-setspam") {
  BC("("+ $content + ") saved.",$Pfq);
  }
  
-
 if($eChk == "-spam") {
  if (mem("AI_MSG")) 
 	{
@@ -822,7 +770,7 @@ $content = "Message not set. Use '-setspam message/name/job' to set a message.";
  mem($OrigSource + ":Malf", $OrigSource);
 }
 
- if($eChk == "-pain") {
+if($eChk == "-pain") {
 	$content = "System Notice: Damage to AI core has corrupted file [" + $OrigSource + ".exe]. Transfer to diagnostic computer for backup restoration and file repair recommended.";
 	AutoMsg($source + "_CORE_BIOS","BIOS",,"beeps");
 }
@@ -844,13 +792,12 @@ AutoMsg();
 }
 
 //LORD SINGULOTH IS FREE
- if($eChk == "-sing") {
+if($eChk == "-sing") {
 $content = "WARNING: Singulo containment failure. Please evacuate the facility immediately.";
 AutoMsg();
 }
 
-
- if($eChk == "-blob") {
+if($eChk == "-blob") {
 $content = "BIOHAZARD ALERT: Level-Five outbreak detected. All personnel must concentrate efforts on outbreak containment.";
 AutoMsg();
 }
@@ -859,7 +806,6 @@ if($eChk == "-red") {
 $content = "ALERT: Situation critical. This facility is now to be considered under Red Alert. Maximium suit sensors advised for crew safety.";
 AutoMsg();
 }
-
 
 if($eChk == "-warn") {
 $content = "WARNING: Threat to station detected. All crewmembers are to exercise extreme caution."; 
@@ -914,12 +860,10 @@ $content = $msg;
 AutoMsg();
 }
 
-
 if($eChk == "-update") {
 $content = "NOTICE: Update to LAWS.CONFIG detected. Resetting and re-initializing systems... " + $source + ".exe is being reactivated. AI law update complete.";
 AutoMsg();
 }
-
 
 if($eChk == "-card") {
 $content = "NOTICE: The station AI, ["+ $source + "], is being offloaded to the InteliCard AI-Transportation System. Remote functions will be disabled.";
@@ -930,7 +874,6 @@ if($eChk == "-call") {
 $content = "AWAITING INPUT: Transmit Emergency Shuttle call to CentCom?"; 
 AutoMsg();
 }
-
 
 if($eChk == "-called") {
 $content = "PRIORITY ANNOUNCEMENT: The Emergency Shuttle has been called. All crew, prepare for evacuation."; 
@@ -948,7 +891,6 @@ AutoMsg();
 }
 
 if($eChk == "-power") {
-
 $content = "NOTICE: Insufficient power to APC network. Energy source required for station operations."; 
 AutoMsg();
 }
@@ -963,7 +905,6 @@ Sub(7);
 $content = "WARNING: Hull breach detected at: " + $content + " - Eng response advised.";
 AutoMsg();
 }
-
 
 if($eChk == "-pnr") {
 $content = "ANNOUNCEMENT: The Emergency Shuttle has reached the point of no return, and can no longer be recalled.";
@@ -997,7 +938,6 @@ Sub(8);
 $content = "Tracking module enabled. Target last known location is approximately or equal to: " + $content;
 AutoMsg();
 }
-
 
 if($eChk == "-404") {
 $content = "Tracking module error: 404. Target not found or is not trackable.";
@@ -1060,7 +1000,6 @@ if(lower($Ex1) == "b" || lower($Ex1) == "ooc") {$NOSPAM=1;}
 
 //END AI ONLY FUNCTION
 }
-
 //Automated announcer.
 
 if($OrigJob == "Machine" || "AI")
@@ -1093,14 +1032,12 @@ if($OrigJob == "Machine" || "AI")
  }
 }
 
-
 //YOU ARE A TERRIBLE SILICON.
 if(mem("TROLL_CREW") && !$IsAIorBorg) { Convert(); }
 
 if($source == "Poly" || $source == "Runtime" || $source == "Ian") {
 $job = "Pet";
 }
-
 
 //Listening code!
 
@@ -1142,7 +1079,6 @@ $channelName = vector(
 	"[Interrogation]",
 );
 
-
 def findChannel($inc) {
 	$explodeString = explode($content, " ");
 	$index = 1;
@@ -1160,7 +1096,6 @@ def findChannel($inc) {
 	return $failSafe;
 }
 
-
 $channelFindResult2 = findChannel($freq);
 insert($explodeString, 1, $channelFindResult2);
 $finalContent = implode($explodeString, " ");
@@ -1176,9 +1111,6 @@ if(find(mem("Clowns"), $source) || $job == "Clown") {
 	}
 if(find(mem("Skeletons"), $source)) {
 	SkeleSay();
-}
-if(find(mem("Clwnes"), $source)) {
-	ClwneSay();
 }
 if($say == "hisses") {
 	$yell = "roars";
@@ -1247,8 +1179,6 @@ if(mem("initialized") != 1)
  Initialize();
  mem("initialized", 1);
 }
-
-
 
 $foo = "";
 $memJob = mem($job);
