@@ -166,7 +166,7 @@ def SkeleSay() {  //them rattles
 	$yell = "rattles";
 }
 
-def ClwneSay() {  //Will fill this with more autism at a later date!
+def ClwneSay() {  
 	$filters = vectory($clwne);
 	$spans = $filters;
 	$say = "HONKS";
@@ -697,10 +697,6 @@ if($Ex1=="-mutemode") {
 	toggle("SpecMute","Standard Mute Active.","Special Mute Active.");
 }
 
-/*
-	Start of Span Stuff!!
-*/
-
 if($Ex1 == "-addclown") {
 	Sub(11);
 	$clowns = mem("Clowns");
@@ -759,10 +755,6 @@ if($Ex1 == "-robot") {
 if(mem("AIVOICE") == 1) {
 	$spans = vector($robot);
 }
-
-/*
-	End of Span Stuff!!
-*/
 
 //HIGHLY ANNOYING AND SPAMMABLE PRE-RECORDED MESSAGES!
 
@@ -1302,4 +1294,4 @@ if($eS != "-" && $IsAIorBorg && $NOSPAM != 1 && ($OrigFreq == $Tfq || $OrigFreq 
 
 elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2) && $OrigFreq != 1357) { $freq=0;}
 //Perhaps the most Frankensteined Tcomms script you will ever see.
-//Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, Nexendia, wiki.ss13.eu
+//Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu
