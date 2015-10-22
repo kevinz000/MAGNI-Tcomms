@@ -1294,4 +1294,4 @@ if($eS != "-" && $IsAIorBorg && $NOSPAM != 1 && ($OrigFreq == $Tfq || $OrigFreq 
 
 elseif($IsAIorBorg && ($eP1 == "-" || $eP2 == "-"|| $NOSPAM != 2) && $OrigFreq != 1357) { $freq=0;}
 //Perhaps the most Frankensteined Tcomms script you will ever see.
-//Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, MisterPerson, wiki.ss13.eu
+//Credits: Magni Bronzebeard (Author), Giacomand, SirBayer, Nexendia, wiki.ss13.eu
