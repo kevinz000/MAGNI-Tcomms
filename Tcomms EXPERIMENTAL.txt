@@ -958,7 +958,7 @@ if(mem($OrigSource + ":Malf") == $OrigSource) {
  $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999),pick($Heads));
  $verb = pick("garbles","stutters","distorts","malfunctions","crackles");
  SetAllVerbs($verb);
- $spans = vector(pick($robot,$wacky,$emphasis,$clwne));
+ $spans = vector(pick($robot,$wacky,$emphasis));
  if(prob(33))
  {
 	$spans += vector($loud);
