@@ -158,7 +158,7 @@ def ClownSay() {
 }
 
 def SkeleSay() {  //them rattles
-	$filters = vector($skele);
+	$filters = vector($papyrus);
 	$spans = $filters;
 	$say = "rattles";
 	$ask = "rattles";
@@ -166,6 +166,14 @@ def SkeleSay() {  //them rattles
 	$yell = "rattles";
 }
 
+def ClwneSay() {  //Will fill this with more autism at a later date!
+	$filters = vectory($clwne);
+	$spans = $filters;
+	$say = "HONKS";
+	$ask = "HONKS";
+	$exclaim = "HONKS";
+	$yell = "HONKS'";
+}
 
 
 //End defs
@@ -689,6 +697,10 @@ if($Ex1=="-mutemode") {
 	toggle("SpecMute","Standard Mute Active.","Special Mute Active.");
 }
 
+/*
+	Start of Span Stuff!!
+*/
+
 if($Ex1 == "-addclown") {
 	Sub(11);
 	$clowns = mem("Clowns");
@@ -723,6 +735,24 @@ if($Ex1 == "-delskeletons") {
 	BC("Skeletons list cleared.",$Pfq);
 }
 
+
+if($Ex1 == "-addclwne") {
+	Sub(11);
+	$clwnes = mem("Clwnes");
+	if(!$clwnes) {
+		$clwnes = vector($content);
+	}
+	else {
+		$clwnes |= $content;
+	}
+	mem("Clwnes",$clwnes);
+	BC("("+$content+") added to Clwnes list! AUTISM!",$Pfq);
+	}
+if($Ex1 == "-delclwnes") {
+	mem("Clwnes",0);
+	BC("Clwnes list cleared.",$Pfq);
+}
+
 if($Ex1 == "-robot") {
 	toggle("AIVOICE","Human voice filter deactivated.","Human voice filter enabled.");
 }
@@ -730,7 +760,9 @@ if(mem("AIVOICE") == 1) {
 	$spans = vector($robot);
 }
 
-
+/*
+	End of Span Stuff!!
+*/
 
 //HIGHLY ANNOYING AND SPAMMABLE PRE-RECORDED MESSAGES!
 
@@ -994,7 +1026,7 @@ if(mem($OrigSource + ":Malf") == $OrigSource) {
  $job = pick("Cyb0r6", "???", "~!@AI?$%", "0S","sYs0P","404","NTSS13","ERR:" + rand(100,999),pick($Heads));
  $verb = pick("garbles","stutters","distorts","malfunctions","crackles");
  SetAllVerbs($verb);
- $spans = vector(pick($robot,$wacky,$emphasis));
+ $spans = vector(pick($robot,$wacky,$emphasis,$clwne));
  if(prob(33))
  {
 	$spans += vector($loud);
@@ -1150,6 +1182,12 @@ if (!$IsAI && ($freq != 1459 || mem($HC)) && $OrigFreq != $Tfq && $freq != $Pfq 
 if(find(mem("Clowns"), $source) || $job == "Clown") {
 	ClownSay();
 	}
+if(find(mem("Skeletons"), $source)) {
+	SkeleSay();
+}
+if(find(mem("Clwnes"), $source)) {
+	ClwneSay();
+}
 if($say == "hisses") {
 	$yell = "roars";
 	$exclaim = "screeches";
