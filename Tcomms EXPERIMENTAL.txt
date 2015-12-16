@@ -3,7 +3,6 @@ $VERSION = "1.74.4"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
- Please view http://pastebin.com/jtKjF941 for instructions.
 */
 
 $Tfq = 1441;
