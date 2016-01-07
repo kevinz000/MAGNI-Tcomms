@@ -901,7 +901,7 @@ AutoMsg();
 }
 
 if($eChk == "-engine") {
-$content = "NOTICE: Current Engine setup is improper or incomplete."; 
+$content = "Configuration of current power generation system is improper or incomplete."; 
 AutoMsg();
 }
 
@@ -971,7 +971,7 @@ if(mem($OrigSource + ":Malf") == $OrigSource) {
 }
 
 if($eChk == "-hail") {
-$content = "All hail our Lord and Savior Dr. Bronzebeard for creating this fantastic script that many Artificial Intelligence systems love!";
+$content = "All hail our Lord and Savior, Dr. Bronzebeard, for creating this fantastic telcos Module that many AI systems love!";
 AutoMsg();
 }
 
