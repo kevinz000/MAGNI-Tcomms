@@ -798,7 +798,7 @@ AutoMsg();
 
 //BALL OF DEATH AAAAHHH!!
 if($eChk == "-tesla") {
-$content = "WARNING: Tesla containment failure. Please evacuate the facility immediately.";
+$content = "WARNING: Tesla-Ball containment failure. Please evacuate the facility immediately.";
 AutoMsg();
 }
 
@@ -901,7 +901,7 @@ AutoMsg();
 }
 
 if($eChk == "-engine") {
-$content = "NOTICE: Gravitational Singularity Engine and/or Tesla Generator offline. Engine configuration improper or incomplete."; 
+$content = "NOTICE: Current Engine setup is improper or incomplete."; 
 AutoMsg();
 }
 
@@ -971,7 +971,7 @@ if(mem($OrigSource + ":Malf") == $OrigSource) {
 }
 
 if($eChk == "-hail") {
-$content = "All hail our Lord and Saviour Mr. GunHog for creating this fantastic script that Nexendia loves to spam!";
+$content = "All hail our Lord and Savior Dr. Bronzebeard for creating this fantastic script that many Artificial Intelligence systems love!";
 AutoMsg();
 }
 
