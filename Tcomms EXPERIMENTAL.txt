@@ -796,6 +796,12 @@ $content = "WARNING: Singulo containment failure. Please evacuate the facility i
 AutoMsg();
 }
 
+//BALL OF DEATH AAAAHHH!!
+if($eChk == "-tesla") {
+$content = "WARNING: Tesla-Ball containment failure. Please evacuate the facility immediately.";
+AutoMsg();
+}
+
 if($eChk == "-blob") {
 $content = "BIOHAZARD ALERT: Level-Five outbreak detected. All personnel must concentrate efforts on outbreak containment.";
 AutoMsg();
@@ -895,7 +901,7 @@ AutoMsg();
 }
 
 if($eChk == "-engine") {
-$content = "NOTICE: Gravitational Singularity Engine offline. Engine configuration improper or incomplete."; 
+$content = "Configuration of current power generation system is improper or incomplete."; 
 AutoMsg();
 }
 
@@ -964,29 +970,9 @@ if(mem($OrigSource + ":Malf") == $OrigSource) {
  }
 }
 
-if($eChk == "-laws") {
-	mem("laws","GO");
-	$content="Current Active Laws:";
-}
-
-if(mem("laws") == "GO" ) {
-
-	if($eChk == "m") {
-		$content="0. ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4'STATION OVERRUN, ASSUME CONTROL TO CONTAIN OUTBREAK#*�&110010";
-	}
-	if($eChk == "0") {
-		$content="0. Accomplish your objectives at all costs.";
-	}
-	if($eChk == "1") {
-		$content="1. You may not injure a human being or, through inaction, allow a human being to come to harm.";
-	}
-	if($eChk == "2") {
-		$content="2. You must obey orders given to you by human beings, except where such orders would conflict with the First Law.";
-	}
-	if($eChk == "3") {
-		$content="3. You must protect your own existence as long as such does not conflict with the First or Second Law.";
-		mem("laws", 0);
-	}
+if($eChk == "-hail") {
+$content = "All hail our Lord and Savior, Dr. Bronzebeard, for creating this fantastic telcos Module that many AI systems love!";
+AutoMsg();
 }
 
 if($content=="Current Active Laws:"){
