@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.74.4"; /*
+$VERSION = "1.74.5"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
