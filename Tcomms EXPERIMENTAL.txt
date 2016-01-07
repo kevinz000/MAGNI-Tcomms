@@ -901,7 +901,7 @@ AutoMsg();
 }
 
 if($eChk == "-engine") {
-$content = "Configuration of current power generation system is improper or incomplete."; 
+$content = "NOTICE: Configuration of current power generation system is improper or incomplete."; 
 AutoMsg();
 }
 
