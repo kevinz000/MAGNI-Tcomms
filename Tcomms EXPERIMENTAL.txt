@@ -1,5 +1,5 @@
 // M.A.G.N.I._TCOMMS_MODULE
-$VERSION = "1.74.4"; /*
+$VERSION = "1.74.5"; /*
 
 AUTH_USAGE: NT Rated AI units, NTSL Licensed Crew
 
@@ -901,7 +901,7 @@ AutoMsg();
 }
 
 if($eChk == "-engine") {
-$content = "Configuration of current power generation system is improper or incomplete."; 
+$content = "NOTICE: Configuration of current power generation system is improper or incomplete."; 
 AutoMsg();
 }
 

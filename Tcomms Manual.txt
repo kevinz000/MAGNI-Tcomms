@@ -16,6 +16,12 @@ SECTION 6: AI ANNOUNCEMENTS
 
 
 ~~~~~ CHANGELOG ~~~~~
+1.74.5
+Tweaks the -engine command to be more "Module"
+Adds 2 new commands "-telsa" and "-hail"
+Tesla being the same as -sing but for the Tesla Engine
+Hail removes the mostly unused -law command and replaces it with a message for our Lord and Savior - Dr. Bronzebeard
+
 1.74.4
 Signaller feedback made nicer.
 Bugfixes
@@ -600,7 +606,7 @@ Example: Put @INS instead of "THE LAW!" in the example of -setspam, then say "-s
  Say it in Engineering channel by putting "e" first to pester the lazy bums into actually fixing it.
 
 -engine
- "NOTICE: Gravitational Singularity Engine offline. Engine configuration improper or incomplete."
+ "NOTICE: Configuration of current power generation system is improper or incomplete."
 
  When the engineers are idiots/lazy/missing and did not properly set up the engine, or not at all, taddle on them with this!
 
@@ -690,6 +696,11 @@ Example: Put @INS instead of "THE LAW!" in the example of -setspam, then say "-s
  OH GOD ITS FREE CALL THE SHUTTLE! -Poly
  When LORD SINGULOTH breaks loose, give the crew a few extra seconds of life with this warning.
 
+-tesla
+ "WARNING: Tesla-Ball containment failure. Please evacuate the facility immediately."
+ 
+ Use this when that pretty ball of lightning becomes a ball of death.
+
 -bsod
  "*BEEEEEEEEP*......<AI's actual name>.exe has encountered a problem, and needs to shut down. We apologize for the inconvenience."
 
@@ -712,3 +723,8 @@ Example: Put @INS instead of "THE LAW!" in the example of -setspam, then say "-s
 -eao
  "<Optional Airlock name> Airlock Emergency Access Override function toggled."
  Emergency Access function on airlocks removes all access restrictions, making it open to anyone. It is better to do this than to bolt open airlocks.
+ 
+-hail
+ "All hail our Lord and Savior, Dr. Bronzebeard, for creating this fantastic telcos Module that many AI systems love!"
+ 
+ For when you just want to praise our Lord and Savior Dr. Bronzebeard aka GunHog.
